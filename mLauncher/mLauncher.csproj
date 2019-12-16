@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Base\DataBase.cs" />
     <Compile Include="Control\MButton.xaml.cs">
       <DependentUpon>MButton.xaml</DependentUpon>
     </Compile>
@@ -101,5 +102,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\mDB\mDB.csproj">
+      <Project>{baa1c41a-8b56-4d7e-b727-e279e990baac}</Project>
+      <Name>mDB</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

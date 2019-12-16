@@ -1,6 +1,7 @@
 ﻿using mLauncher.Control;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,15 +26,22 @@ namespace mLauncher
         private int colCount = 0;
         private int rowCount = 0;
 
+        private mDB.SQLite.Connection conn;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            conn = new mDB.SQLite.Connection();
+            Base.DataBase.InitDB(conn);
+
             colCount = 8;
             rowCount = 4;
             DrawLauncher();
         }
+
+
+
 
         private void DrawLauncher()
         {
@@ -80,10 +88,6 @@ namespace mLauncher
                         grid.Children.Add(button);
                     }
                 }
-
-
-
-
             }
         }
 
@@ -93,6 +97,6 @@ namespace mLauncher
             Console.WriteLine(button.Name);
         }
 
-       
+
     }
 }
