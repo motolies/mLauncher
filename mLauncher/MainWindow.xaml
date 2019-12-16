@@ -4,13 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mLauncher"
+        xmlns:control="clr-namespace:mLauncher.Control"
         mc:Ignorable="d"
         Title="mLauncher" Height="300" Width="500" >
+    
     <Grid>
+                
         <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <TabItem Header="TabItem">
                 <Grid x:Name="subGrid" Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
+        
     </Grid>
 </Window>

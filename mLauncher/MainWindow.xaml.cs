@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mLauncher.Control;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,19 +56,21 @@ namespace mLauncher
                     for (int c = 0; c < colCount; c++)
                     {
 
-                        if(r == 0) {
+                        if (r == 0)
+                        {
                             grid.ColumnDefinitions.Add(new ColumnDefinition()
                             {
                                 Width = new GridLength(1, GridUnitType.Star)
                             });
                         }
-                        
+
                         // col 선택 후 버튼 삽입
-                        Button button = new Button()
+                        MButton button = new MButton()
                         {
                             Name = string.Format("btn_{0}_{1}_{2}", t, r, c),
                             Tag = string.Format("btn_{0}_{1}_{2}", t, r, c),
-                            Content = string.Format("btn_{0}_{1}_{2}", t, r, c)
+                            Text = string.Format("btn_{0}_{1}_{2}", t, r, c)
+
                         };
                         button.Click += new RoutedEventHandler(Button_Click);
 
@@ -86,7 +89,7 @@ namespace mLauncher
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Button button = sender as Button;
+            MButton button = sender as MButton;
             Console.WriteLine(button.Name);
         }
 
