@@ -10,7 +10,20 @@ namespace mLauncher.Base
 {
     internal class DataBase
     {
-        internal static void InitDB(Connection conn)
+        private static mDB.SQLite.Connection conn;
+
+        static DataBase()
+        {
+            conn = new mDB.SQLite.Connection();
+        }
+
+        internal static string GetSettings(string id)
+        {
+            return conn.ExecuteValue<string>(string.Format("SELECT Value FROM Setting WHERE Id = '{0}';", id));
+        }
+
+
+        internal static void InitDB()
         {
             #region 스키마 조회?
             // 테이블 조회 후 테이블이 없으면 테이블을 만들고 기본값을 넣는다
@@ -48,6 +61,15 @@ CREATE TABLE IF NOT EXISTS Setting (
 	Description	INTEGER NOT NULL,
 	PRIMARY KEY(Id)
 );
+
+INSERT OR IGNORE INTO Setting(Id, Value, DefaultValue, Description)
+VALUES('ROWS', 4, 4, 'ROW의 갯수')
+, ('COLS', 8, 8, 'COLUMN의 갯수') ;
+
+
+
+
+
 ";
             conn.Execute(initTables);
 

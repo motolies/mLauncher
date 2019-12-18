@@ -26,17 +26,17 @@ namespace mLauncher
         private int colCount = 0;
         private int rowCount = 0;
 
-        private mDB.SQLite.Connection conn;
-
         public MainWindow()
         {
             InitializeComponent();
 
-            conn = new mDB.SQLite.Connection();
-            Base.DataBase.InitDB(conn);
+            Base.DataBase.InitDB();
 
-            colCount = 8;
-            rowCount = 4;
+            string cols = Base.DataBase.GetSettings("COLS");
+            string rows = Base.DataBase.GetSettings("ROWS");
+            colCount = int.Parse(cols);
+            rowCount = int.Parse(rows);
+
             DrawLauncher();
         }
 
