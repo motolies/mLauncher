@@ -17,11 +17,31 @@ namespace mLauncher.Base
             conn = new mDB.SQLite.Connection();
         }
 
-        internal static string GetSettings(string id)
+        internal static string GetSetting(string id)
         {
             return conn.ExecuteValue<string>(string.Format("SELECT Value FROM Setting WHERE Id = '{0}';", id));
         }
 
+        internal static T GetValue<T>(string sql)
+        {
+            return conn.ExecuteValue<T>(sql);
+        }
+
+        internal static DataTable GetTabs()
+        {
+            return conn.ExecuteReader("SELECT * FROM Tab;");
+        }
+
+        internal static DataTable GetButtons()
+        {
+            return conn.ExecuteReader("SELECT * FROM Button;");
+        }
+
+
+        private static DataTable ExecuteReader(string sql)
+        {
+            return conn.ExecuteReader(sql);
+        }
 
         internal static void InitDB()
         {
@@ -33,19 +53,19 @@ namespace mLauncher.Base
 
             }
             #endregion
-                                 
+
             // 테이블 생성
             string initTables =
 @"
 CREATE TABLE IF NOT EXISTS Tab 
 (
-    Id    INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Id    TEXT NOT NULL PRIMARY KEY,
     Name  TEXT NOT NULL,
 	Seq   INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Button (
-	TabId	INTEGER NOT NULL,
+	TabId	TEXT NOT NULL,
 	Col	INTEGER NOT NULL,
 	Row	INTEGER NOT NULL,
 	Name	TEXT NOT NULL,
@@ -66,6 +86,8 @@ INSERT OR IGNORE INTO Setting(Id, Value, DefaultValue, Description)
 VALUES('ROWS', 4, 4, 'ROW의 갯수')
 , ('COLS', 8, 8, 'COLUMN의 갯수') ;
 
+INSERT OR IGNORE INTO Tab(Id, Name, Seq)
+VALUES( 'DEFAULT', '기본 프로그램', 1);
 
 
 

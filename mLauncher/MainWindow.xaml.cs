@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using mLauncher.Base;
 
 namespace mLauncher
 {
@@ -25,18 +26,22 @@ namespace mLauncher
         private int tabCount = 1;
         private int colCount = 0;
         private int rowCount = 0;
+        private DataTable tabs;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            Base.DataBase.InitDB();
+            DataBase.InitDB();
 
-            string cols = Base.DataBase.GetSettings("COLS");
-            string rows = Base.DataBase.GetSettings("ROWS");
+            tabs = DataBase.GetTabs();
+            tabCount = tabs.Rows.Count;
+
+            string cols = DataBase.GetSetting("COLS");
+            string rows = DataBase.GetSetting("ROWS");
             colCount = int.Parse(cols);
             rowCount = int.Parse(rows);
-
+            
             DrawLauncher();
         }
 
