@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using mLauncher.Base;
 
 namespace mLauncher.Control
 {
@@ -25,6 +27,10 @@ namespace mLauncher.Control
             InitializeComponent();
             this.DataContext = this;
         }
+
+        public string TabId { get; set; }
+        public int Col { get; set; }
+        public int Row { get; set; }
 
         public string Text
         {
@@ -42,11 +48,15 @@ namespace mLauncher.Control
         public static readonly DependencyProperty IconImageProperty =
             DependencyProperty.Register("IconImage", typeof(ImageSource), typeof(MButton), new UIPropertyMetadata(null));
 
+        #region events
         public event RoutedEventHandler Click;
-
-        private void button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             Click?.Invoke(this, e);
         }
+
+        #endregion
+
+
     }
 }

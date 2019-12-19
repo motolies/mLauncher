@@ -11,9 +11,9 @@
     <Grid>
                 
         <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <TabItem Header="TabItem">
+            <!--<TabItem Header="TabItem">
                 <Grid x:Name="subGrid" Background="#FFE5E5E5"/>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
         
     </Grid>

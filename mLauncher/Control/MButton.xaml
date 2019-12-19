@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:mLauncher.Control"
              xmlns:mLauncher="clr-namespace:mLauncher" x:Class="mLauncher.Control.MButton"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100" >
-    <Button Click="button_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+             d:DesignHeight="100" d:DesignWidth="100"  >
+    <Button Click="Button_Click"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  >
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
@@ -16,7 +16,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="20" />
             </Grid.RowDefinitions>
-            <Image Source="{Binding IconImage}" Grid.Row="0" Grid.Column="0" Stretch="UniformToFill" />
+            <Image Source="{Binding IconImage}" Grid.Row="0" Grid.Column="0" Margin="5" />
             <TextBlock Text="{Binding Text}" Grid.Column="0" Grid.Row="1" TextAlignment="Center" />
         </Grid>
     </Button>

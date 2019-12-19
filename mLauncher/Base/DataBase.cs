@@ -29,19 +29,24 @@ namespace mLauncher.Base
 
         internal static DataTable GetTabs()
         {
-            return conn.ExecuteReader("SELECT * FROM Tab;");
+            return conn.ExecuteReader("SELECT * FROM Tab ORDER BY Seq;");
         }
 
         internal static DataTable GetButtons()
         {
             return conn.ExecuteReader("SELECT * FROM Button;");
         }
-
-
+               
         private static DataTable ExecuteReader(string sql)
         {
             return conn.ExecuteReader(sql);
         }
+
+        internal static int InsertButton(string sql)
+        {
+            return conn.Execute(sql);
+        }
+
 
         internal static void InitDB()
         {
@@ -69,6 +74,7 @@ CREATE TABLE IF NOT EXISTS Button (
 	Col	INTEGER NOT NULL,
 	Row	INTEGER NOT NULL,
 	Name	TEXT NOT NULL,
+    Path	TEXT NOT NULL,
 	Icon	BLOB,
 	PRIMARY KEY(TabId,Col,Row),
 	FOREIGN KEY(TabId) REFERENCES Tab(Id) ON UPDATE CASCADE ON DELETE CASCADE
