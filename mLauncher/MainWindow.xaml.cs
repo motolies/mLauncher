@@ -1,5 +1,6 @@
 ﻿using EventHook;
 using mEx;
+using mHOOK.Keyboad;
 using mLauncher.Base;
 using mLauncher.Control;
 using System;
@@ -9,8 +10,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -27,6 +30,8 @@ namespace mLauncher
         private int rowCount = 0;
         private DataTable tabs;
         private DataTable buttons;
+        static System.Threading.Timer listClearTimer;
+        private System.Windows.Point CursorPoint = new System.Windows.Point();
 
         public MainWindow()
         {
@@ -44,10 +49,43 @@ namespace mLauncher
             rowCount = int.Parse(rows);
 
             DrawLauncher();
-            KeyboardHook();
             MouseHook();
+            LocalTimer();
+            GlobalKeyboardHook();
+        }
+
+        KeyboardHook hook = new KeyboardHook();
+
+        private void GlobalKeyboardHook()
+        {
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.S);
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Keys.Delete);
 
         }
+
+        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
+            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.S)
+            {
+                Console.WriteLine("call");
+            }else if(e.Modifier == mHOOK.Keyboad.ModifierKeys.None && e.Key == Keys.Delete) {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                {
+                    System.Windows.Point point = Mouse.GetPosition(System.Windows.Application.Current.MainWindow);
+                    //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                    VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                }));
+            }
+
+
+
+                
+        }
+
+
 
         private void DrawLauncher()
         {
@@ -91,10 +129,10 @@ namespace mLauncher
                         button.AllowDrop = true;
                         button.Click += new RoutedEventHandler(Button_Click);
 
-                        button.DragEnter += new DragEventHandler(Button_DragEnter);
-                        button.Drop += new DragEventHandler(Button_Drop);
+                        button.DragEnter += new System.Windows.DragEventHandler(Button_DragEnter);
+                        button.Drop += new System.Windows.DragEventHandler(Button_Drop);
                         button.PreviewMouseDown += new MouseButtonEventHandler(Button_PreviewMouseDown);
-                        button.PreviewMouseMove += new MouseEventHandler(Button_PreviewMouseMove);
+                        button.PreviewMouseMove += new System.Windows.Input.MouseEventHandler(Button_PreviewMouseMove);
                         button.PreviewMouseUp += new MouseButtonEventHandler(Button_PreviewMouseUp);
 
 
@@ -130,12 +168,12 @@ namespace mLauncher
         private bool DraggingFromGrid = false;
         private System.Windows.Point DraggingStartPoint = new System.Windows.Point();
 
-        private void Button_DragEnter(object sender, DragEventArgs e)
+        private void Button_DragEnter(object sender, System.Windows.DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effects = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(System.Windows.DataFormats.FileDrop))
+                e.Effects = System.Windows.DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(MButton)))
-                e.Effects = DragDropEffects.Copy;
+                e.Effects = System.Windows.DragDropEffects.Copy;
         }
 
         private void Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -158,7 +196,7 @@ namespace mLauncher
                 {
                     DraggingFromGrid = false;
 
-                    DragDrop.DoDragDrop((MButton)sender, button, DragDropEffects.Copy);
+                    DragDrop.DoDragDrop((MButton)sender, button, System.Windows.DragDropEffects.Copy);
 
                     Console.WriteLine(" mouse up ");
                 }
@@ -173,7 +211,7 @@ namespace mLauncher
         }
 
 
-        private void Button_Drop(object sender, DragEventArgs e)
+        private void Button_Drop(object sender, System.Windows.DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(MButton)))
             {
@@ -196,7 +234,7 @@ namespace mLauncher
             }
             else
             {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string[] files = (string[])e.Data.GetData(System.Windows.DataFormats.FileDrop);
 
                 string path = files.AsEnumerable().First(); ;
                 if (!File.Exists(path) && !Directory.Exists(path))
@@ -215,32 +253,38 @@ namespace mLauncher
 
         #region hook
 
+        static string prevClick;
 
-
-        private void KeyboardHook()
+        private void MouseHook()
         {
             using (var eventHookFactory = new EventHookFactory())
             {
-                var keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
-                keyboardWatcher.Start();
-                keyboardWatcher.OnKeyInput += (s, e) =>
+                var mouseWatcher = eventHookFactory.GetMouseWatcher();
+                mouseWatcher.Start();
+                mouseWatcher.OnMouseInput += (s, e) =>
                 {
-                    Console.WriteLine(string.Format("Key {0} event of key {1}", e.KeyData.EventType, e.KeyData.Keyname));
-                    if (e.KeyData.EventType == KeyEvent.down && e.KeyData.Keyname == "Delete")
+                    // Console.WriteLine(string.Format("Mouse event {0} at point {1},{2}", e.Message.ToString(), e.Point.x, e.Point.y));
+
+                    CursorPoint.X = e.Point.x;
+                    CursorPoint.Y = e.Point.y;
+
+                    if (e.Message.ToString().Contains("BUTTONDOWN"))
                     {
-                        // 커서 밑에 있는 콘트롤 찾기가 힘들다...
-
-                        Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                        Console.WriteLine(string.Format("prev : {0}, cur : {1}", prevClick, e.Message));
+                        if (!string.IsNullOrWhiteSpace(prevClick) && prevClick != e.Message.ToString())
                         {
-                            System.Windows.Point point = Mouse.GetPosition(Application.Current.MainWindow);
-                            //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
-                            VisualTreeHelper.HitTest(this, null,  new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
-                        }));
-
+                            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                            {
+                                WindowShow();
+                            }));
+                        }
+                        prevClick = e.Message.ToString();
                     }
                 };
             }
         }
+
+
 
         private HitTestResultBehavior MyHitTestResult(HitTestResult result)
         {
@@ -262,10 +306,9 @@ namespace mLauncher
         private HitTestFilterBehavior MyHitTestFilter(DependencyObject potentialHitTestTarget)
         {
             // https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?redirectedfrom=MSDN#using_a_hit_test_filter_callback
-            
+
             // if문에 있는 애들은 모두 제외대상 클래스
-            
-            if (potentialHitTestTarget.GetType() == typeof(Label))
+            if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Label))
                 return HitTestFilterBehavior.ContinueSkipSelf;
             else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Image))
                 return HitTestFilterBehavior.ContinueSkipSelf;
@@ -277,34 +320,17 @@ namespace mLauncher
                 return HitTestFilterBehavior.Continue;
         }
 
-
-
-        private void MouseHook()
-        {
-            //using (var eventHookFactory = new EventHookFactory())
-            //{
-            //    var mouseWatcher = eventHookFactory.GetMouseWatcher();
-            //    mouseWatcher.Start();
-            //    mouseWatcher.OnMouseInput += (s, e) =>
-            //    {
-            //        //Console.WriteLine(string.Format("Mouse event {0} at point {1},{2}", e.Message.ToString(), e.Point.x, e.Point.y));
-            //        if (e.Message.ToString().Contains("BUTTONDOWN"))
-            //        {
-            //            if (!string.IsNullOrWhiteSpace(prevClick) && prevClick != e.Message.ToString())
-            //            {
-            //                this.Invoke(new MethodInvoker(delegate
-            //                {
-            //                    this.Location = new Point(e.Point.x, e.Point.y);
-            //                    this.ShowLauncher();
-            //                }));
-            //            }
-            //            prevClick = e.Message.ToString();
-            //        }
-            //    };
-            //}
-        }
-
         #endregion
+
+        private void WindowShow()
+        {
+            this.Left = CursorPoint.X;
+            this.Top = CursorPoint.Y;
+            this.Topmost = true;
+            if (this.WindowState == WindowState.Minimized)
+                this.WindowState = WindowState.Normal;
+            this.Show();
+        }
 
 
         private bool InsertButton(MButton btn, string path)
@@ -344,6 +370,28 @@ namespace mLauncher
             Process.Start(btn.Path);
         }
 
+        #region thread timer
+        private void LocalTimer()
+        {
 
+            //스레드 타이머
+            TimerCallback tc = new TimerCallback((o) =>
+            {
+                prevClick = string.Empty;
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                {
+                    //txtDatetime.Text = DateTime.Now.ToString("yyyy-MM-dd(ddd) tt hh:mm:ss");
+                }));
+
+            });
+            listClearTimer = new System.Threading.Timer(tc, Dispatcher, 0, 500);
+        }
+        #endregion
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true;
+            this.WindowState = WindowState.Minimized;
+        }
     }
 }
