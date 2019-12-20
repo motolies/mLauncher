@@ -2,7 +2,9 @@
 using mLauncher.Control;
 using System;
 using System.Data;
+using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,6 +20,7 @@ namespace mLauncher
         private int colCount = 0;
         private int rowCount = 0;
         private DataTable tabs;
+        private DataTable buttons;
 
         public MainWindow()
         {
@@ -26,6 +29,7 @@ namespace mLauncher
             DataBase.InitDB();
 
             tabs = DataBase.GetTabs();
+            buttons = DataBase.GetButtons();
             tabCount = tabs.Rows.Count;
 
             string cols = DataBase.GetSetting("COLS");
@@ -67,21 +71,31 @@ namespace mLauncher
                             });
                         }
 
+
                         // col 선택 후 버튼 삽입
                         MButton button = new MButton()
                         {
                             TabId = tab.Tag.ToString(),
                             Row = r,
-                            Col = c
+                            Col = c,
                         };
                         button.AllowDrop = true;
                         button.Click += new RoutedEventHandler(Button_Click);
                         button.DragEnter += new DragEventHandler(Button_DragEnter);
                         button.Drop += new DragEventHandler(Button_Drop);
-
                         Grid.SetRow(button, r);
                         Grid.SetColumn(button, c);
                         grid.Children.Add(button);
+
+                        // button 가져오기
+                        DataRow rButton = buttons.AsEnumerable().FirstOrDefault(dr =>
+                            dr.Field<string>("TabId") == row["Id"].ToString() && dr.Field<Int64>("Col") == c && dr.Field<Int64>("Row") == r);
+                        if (rButton != null)
+                        {
+                            button.Text = rButton.Field<string>("Name");
+                            button.IconImage = IconManager.ByteToImage(rButton.Field<byte[]>("Icon"));
+                        }
+
                     }
 
 
@@ -91,23 +105,26 @@ namespace mLauncher
 
             }
         }
-       
 
-        private bool InsertButton(MButton btn, string path, string tabId)
+
+        private bool InsertButton(MButton btn, string path)
         {
             // 파일명 읽어와야 함
-            string fileName = "tmpFileName";
+            string fileName = Path.GetFileName(path);
+            //Bitmap bitIcon = IconManager.ToBitmap(path);
+            ImageSource imgIcon = IconManager.GetIcon(path);
+            System.Drawing.Image image = IconManager.ImageSourceToImage(imgIcon);
 
-            // 아이콘 blob으로 저장해야함
-            ImageSource img = IconManager.FindIconForFilename(path, true);
-            btn.IconImage = img;
+            using (Bitmap bitIcon = new Bitmap(image, new System.Drawing.Size(64, 64)))
+            {
+                byte[] baIcon = IconManager.ImageToByte(bitIcon);
 
-            //if (DataBase.InsertButton(string.Format("INSERT OR REPLACE INTO Button Values('{0}', '{1}', '{2}', '{3}', '{4}', '{5}' )", btn.TabId, btn.Col, btn.Row, fileName, path, null)) < 1)
-            //    return false;
+                if (DataBase.InsertButton(btn.TabId, btn.Col, btn.Row, fileName, path, baIcon) < 1)
+                    return false;
+            }
 
-
-            //btn.Image = IconManager.ToBitmap(path);
-            //btn.Title = Path.GetFileName(path);
+            btn.IconImage = imgIcon;
+            btn.Text = fileName;
             return true;
         }
         private bool DeleteButton(MButton btn)
@@ -163,7 +180,7 @@ namespace mLauncher
 
                     string tabId = ((TabItem)((Grid)btn.Parent).Parent).Tag.ToString();
 
-                    InsertButton(btn, path, tabId);
+                    InsertButton(btn, path);
                 }
             }
 

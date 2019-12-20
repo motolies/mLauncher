@@ -62,7 +62,7 @@ namespace mDB.SQLite
                 throw new Exception("SQLite ERROR", e);
             }
         }
-               
+
         public int Execute(string sql)
         {
             try
@@ -71,6 +71,20 @@ namespace mDB.SQLite
                 {
                     return cmd.ExecuteNonQuery();
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw new Exception("SQLite ERROR", e);
+            }
+        }
+
+        public int Execute(SQLiteCommand command)
+        {
+            try
+            {
+                command.Connection = mConn;
+                return command.ExecuteNonQuery();
             }
             catch (Exception e)
             {

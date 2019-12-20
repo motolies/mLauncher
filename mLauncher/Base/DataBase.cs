@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace mLauncher.Base
         static DataBase()
         {
             conn = new mDB.SQLite.Connection();
+            conn.Execute("select 1;");
+
         }
 
         internal static string GetSetting(string id)
@@ -36,15 +39,28 @@ namespace mLauncher.Base
         {
             return conn.ExecuteReader("SELECT * FROM Button;");
         }
-               
-        private static DataTable ExecuteReader(string sql)
+
+        internal static DataTable ExecuteReader(string sql)
         {
             return conn.ExecuteReader(sql);
         }
 
-        internal static int InsertButton(string sql)
+        internal static void Execute(string sql)
         {
-            return conn.Execute(sql);
+            conn.Execute(sql);
+        }
+
+        internal static int InsertButton(string tabId, int col, int row, string name, string path, byte[] icon)
+        {
+            SQLiteCommand command = new SQLiteCommand();
+            command.CommandText = "INSERT OR IGNORE INTO Button(TabId, Col, Row, Name, Path, Icon) VALUES (@tab, @col, @row, @name, @path, @icon);";
+            command.Parameters.Add("@tab", DbType.String).Value = tabId;
+            command.Parameters.Add("@col", DbType.Int32).Value = col;
+            command.Parameters.Add("@row", DbType.Int32).Value = row;
+            command.Parameters.Add("@name", DbType.String).Value = name;
+            command.Parameters.Add("@path", DbType.String).Value = path;
+            command.Parameters.Add("@icon", DbType.Binary).Value = icon;
+            return conn.Execute(command);
         }
 
 
