@@ -49,42 +49,13 @@ namespace mLauncher
             rowCount = int.Parse(rows);
 
             DrawLauncher();
+            GlobalKeyboardHook();
             MouseHook();
             LocalTimer();
-            GlobalKeyboardHook();
-        }
-
-        KeyboardHook hook = new KeyboardHook();
-
-        private void GlobalKeyboardHook()
-        {
-            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
             
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.S);
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Keys.Delete);
-
         }
 
-        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
-        {
-            Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
-            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.S)
-            {
-                Console.WriteLine("call");
-            }else if(e.Modifier == mHOOK.Keyboad.ModifierKeys.None && e.Key == Keys.Delete) {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-                {
-                    System.Windows.Point point = Mouse.GetPosition(System.Windows.Application.Current.MainWindow);
-                    //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
-                    VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
-                }));
-            }
-
-
-
-                
-        }
-
+     
 
 
         private void DrawLauncher()
@@ -253,6 +224,7 @@ namespace mLauncher
 
         #region hook
 
+
         static string prevClick;
 
         private void MouseHook()
@@ -284,6 +256,34 @@ namespace mLauncher
             }
         }
 
+        KeyboardHook hook = new KeyboardHook();
+
+        private void GlobalKeyboardHook()
+        {
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.S);
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Keys.Delete);
+
+        }
+
+        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
+            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.S)
+            {
+                WindowShow();
+            }
+            else if (e.Modifier == mHOOK.Keyboad.ModifierKeys.None && e.Key == Keys.Delete)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                {
+                    System.Windows.Point point = Mouse.GetPosition(System.Windows.Application.Current.MainWindow);
+                    //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                    VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                }));
+            }
+        }
 
 
         private HitTestResultBehavior MyHitTestResult(HitTestResult result)
@@ -391,7 +391,9 @@ namespace mLauncher
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             e.Cancel = true;
-            this.WindowState = WindowState.Minimized;
+            //this.WindowState = WindowState.Minimized;
+            Visibility = Visibility.Collapsed;
+
         }
     }
 }
