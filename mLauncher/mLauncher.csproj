@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EventHook, Version=1.4.105.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EventHook.1.4.105\lib\net45\EventHook.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139" />
@@ -99,6 +102,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -111,6 +115,10 @@
     <ProjectReference Include="..\mDB\mDB.csproj">
       <Project>{baa1c41a-8b56-4d7e-b727-e279e990baac}</Project>
       <Name>mDB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\mEx\mEx.csproj">
+      <Project>{7255d0db-e47b-4e45-af76-cbcb6555711b}</Project>
+      <Name>mEx</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

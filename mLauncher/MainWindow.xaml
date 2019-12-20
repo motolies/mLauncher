@@ -9,12 +9,8 @@
         Title="mLauncher" Height="300" Width="500" >
     
     <Grid>
-                
-        <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <!--<TabItem Header="TabItem">
-                <Grid x:Name="subGrid" Background="#FFE5E5E5"/>
-            </TabItem>-->
-        </TabControl>
-        
+
+        <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
     </Grid>
 </Window>

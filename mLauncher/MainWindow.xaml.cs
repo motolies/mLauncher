@@ -1,7 +1,11 @@
-﻿using mLauncher.Base;
+﻿using EventHook;
+using mEx;
+using mLauncher.Base;
 using mLauncher.Control;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace mLauncher
 {
@@ -39,6 +44,9 @@ namespace mLauncher
             rowCount = int.Parse(rows);
 
             DrawLauncher();
+            KeyboardHook();
+            MouseHook();
+
         }
 
         private void DrawLauncher()
@@ -85,9 +93,9 @@ namespace mLauncher
 
                         button.DragEnter += new DragEventHandler(Button_DragEnter);
                         button.Drop += new DragEventHandler(Button_Drop);
-                        button.PreviewMouseDown += new MouseButtonEventHandler( Button_PreviewMouseDown);
-                        button.PreviewMouseMove +=new MouseEventHandler( Button_PreviewMouseMove);
-                        button.PreviewMouseUp += new MouseButtonEventHandler( Button_PreviewMouseUp);
+                        button.PreviewMouseDown += new MouseButtonEventHandler(Button_PreviewMouseDown);
+                        button.PreviewMouseMove += new MouseEventHandler(Button_PreviewMouseMove);
+                        button.PreviewMouseUp += new MouseButtonEventHandler(Button_PreviewMouseUp);
 
 
                         Grid.SetRow(button, r);
@@ -105,16 +113,11 @@ namespace mLauncher
                         }
 
                     }
-
-
-
-
                 }
-
             }
         }
 
-    
+
 
 
 
@@ -123,6 +126,7 @@ namespace mLauncher
 
 
         #region drag and drop
+
         private bool DraggingFromGrid = false;
         private System.Windows.Point DraggingStartPoint = new System.Windows.Point();
 
@@ -143,7 +147,7 @@ namespace mLauncher
             }
         }
 
-        private void Button_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void Button_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             var button = sender as MButton;
 
@@ -153,7 +157,7 @@ namespace mLauncher
                 if (System.Math.Abs(point.X - DraggingStartPoint.X) > 10 || System.Math.Abs(point.Y - DraggingStartPoint.Y) > 10)
                 {
                     DraggingFromGrid = false;
-                    
+
                     DragDrop.DoDragDrop((MButton)sender, button, DragDropEffects.Copy);
 
                     Console.WriteLine(" mouse up ");
@@ -167,36 +171,7 @@ namespace mLauncher
                 DraggingFromGrid = false;
             }
         }
-        #endregion
 
-
-        private bool InsertButton(MButton btn, string path)
-        {
-            // 파일명 읽어와야 함
-            string fileName = Path.GetFileName(path);
-            ImageSource imgIcon = IconManager.GetIcon(path);
-            byte[] baIcon = IconManager.ImageSourceToByte(imgIcon);
-
-            if (DataBase.InsertButton(btn.TabId, btn.Col, btn.Row, fileName, path, baIcon) < 1)
-                return false;
-
-            btn.IconImage = imgIcon;
-            btn.Text = fileName;
-            btn.Path = path;
-            return true;
-        }
-
-        private bool DeleteButton(MButton btn)
-        {
-
-            if (DataBase.DeleteButton(btn.TabId, btn.Col, btn.Row) < 1)
-                return false;
-
-            btn.IconImage = null;
-            btn.Text = string.Empty;
-            btn.Path = string.Empty;
-            return true;
-        }
 
         private void Button_Drop(object sender, DragEventArgs e)
         {
@@ -236,12 +211,137 @@ namespace mLauncher
 
         }
 
+        #endregion
 
+        #region hook
+
+
+
+        private void KeyboardHook()
+        {
+            using (var eventHookFactory = new EventHookFactory())
+            {
+                var keyboardWatcher = eventHookFactory.GetKeyboardWatcher();
+                keyboardWatcher.Start();
+                keyboardWatcher.OnKeyInput += (s, e) =>
+                {
+                    Console.WriteLine(string.Format("Key {0} event of key {1}", e.KeyData.EventType, e.KeyData.Keyname));
+                    if (e.KeyData.EventType == KeyEvent.down && e.KeyData.Keyname == "Delete")
+                    {
+                        // 커서 밑에 있는 콘트롤 찾기가 힘들다...
+
+                        Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                        {
+                            System.Windows.Point point = Mouse.GetPosition(Application.Current.MainWindow);
+                            //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                            VisualTreeHelper.HitTest(this, null,  new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                        }));
+
+                    }
+                };
+            }
+        }
+
+        private HitTestResultBehavior MyHitTestResult(HitTestResult result)
+        {
+            Console.WriteLine("result : " + result.VisualHit.GetType());
+
+            // wpf 에서 의도적으로 구현했는지 모르겠지만, userControl은 hitTest에서 result로 떨어지지 않는다.
+            // 그래서 눈에 보이는 놈 하나만 발견하면 다 중지시켜버리고
+            // 돔 구조니까 부모를 따라가도록 한다.
+
+            var std = result.VisualHit as DependencyObject;
+            MButton button = std.GetVisualParent<MButton>();
+
+            DeleteButton(button);
+
+            return HitTestResultBehavior.Stop;
+
+        }
+
+        private HitTestFilterBehavior MyHitTestFilter(DependencyObject potentialHitTestTarget)
+        {
+            // https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?redirectedfrom=MSDN#using_a_hit_test_filter_callback
+            
+            // if문에 있는 애들은 모두 제외대상 클래스
+            
+            if (potentialHitTestTarget.GetType() == typeof(Label))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Image))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.TextBlock))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Border))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else
+                return HitTestFilterBehavior.Continue;
+        }
+
+
+
+        private void MouseHook()
+        {
+            //using (var eventHookFactory = new EventHookFactory())
+            //{
+            //    var mouseWatcher = eventHookFactory.GetMouseWatcher();
+            //    mouseWatcher.Start();
+            //    mouseWatcher.OnMouseInput += (s, e) =>
+            //    {
+            //        //Console.WriteLine(string.Format("Mouse event {0} at point {1},{2}", e.Message.ToString(), e.Point.x, e.Point.y));
+            //        if (e.Message.ToString().Contains("BUTTONDOWN"))
+            //        {
+            //            if (!string.IsNullOrWhiteSpace(prevClick) && prevClick != e.Message.ToString())
+            //            {
+            //                this.Invoke(new MethodInvoker(delegate
+            //                {
+            //                    this.Location = new Point(e.Point.x, e.Point.y);
+            //                    this.ShowLauncher();
+            //                }));
+            //            }
+            //            prevClick = e.Message.ToString();
+            //        }
+            //    };
+            //}
+        }
+
+        #endregion
+
+
+        private bool InsertButton(MButton btn, string path)
+        {
+            // 파일명 읽어와야 함
+            string fileName = Path.GetFileName(path);
+            ImageSource imgIcon = IconManager.GetIcon(path);
+            byte[] baIcon = IconManager.ImageSourceToByte(imgIcon);
+
+            if (DataBase.InsertButton(btn.TabId, btn.Col, btn.Row, fileName, path, baIcon) < 1)
+                return false;
+
+            btn.IconImage = imgIcon;
+            btn.Text = fileName;
+            btn.Path = path;
+            return true;
+        }
+
+        private bool DeleteButton(MButton btn)
+        {
+
+            if (DataBase.DeleteButton(btn.TabId, btn.Col, btn.Row) < 1)
+                return false;
+
+            btn.IconImage = null;
+            btn.Text = string.Empty;
+            btn.Path = string.Empty;
+            return true;
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MButton button = sender as MButton;
-            Console.WriteLine(string.Format("{0}, {1}, {2}", button.TabId, button.Col, button.Row));
+            MButton btn = sender as MButton;
+            if (string.IsNullOrWhiteSpace(btn.Path))
+                return;
+
+            Process.Start(btn.Path);
         }
 
 

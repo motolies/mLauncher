@@ -27,6 +27,7 @@ namespace mLauncher.Control
         {
             InitializeComponent();
             this.DataContext = this;
+            this.IsHitTestVisible = true;
         }
 
         public string TabId { get; set; }
@@ -56,13 +57,15 @@ namespace mLauncher.Control
         {
             Click?.Invoke(this, e);
         }
-        //public new event MouseButtonEventHandler MouseDown;
-        //private void Button_MouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    MouseDown?.Invoke(this, e);
-        //}
+
 
         #endregion
+
+        public override string ToString()
+        {
+            string msg = string.Format("MButton [TabId = {0}, Col = {1}, Row = {2}, Path = {3}]", TabId, Col, Row, Path);
+            return base.ToString() + Environment.NewLine + msg;
+        }
 
 
     }
