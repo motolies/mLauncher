@@ -63,6 +63,12 @@ namespace mLauncher.Base
             return conn.Execute(command);
         }
 
+        internal static int DeleteButton(string tabId, int col, int row)
+        {
+            string sql = string.Format("DELETE FROM Button WHERE TabId = '{0}' AND Col = {1} AND Row = {2};", tabId, col, row);
+            return conn.Execute(sql);
+        }
+
 
         internal static void InitDB()
         {

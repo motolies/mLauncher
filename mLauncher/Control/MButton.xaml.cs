@@ -56,6 +56,11 @@ namespace mLauncher.Control
         {
             Click?.Invoke(this, e);
         }
+        //public new event MouseButtonEventHandler MouseDown;
+        //private void Button_MouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    MouseDown?.Invoke(this, e);
+        //}
 
         #endregion
 

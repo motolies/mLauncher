@@ -84,6 +84,18 @@ namespace mLauncher.Base
 
         }
 
+        public static byte[] ImageSourceToByte(ImageSource img)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(img as BitmapSource));
+                encoder.Save(ms);
+                ms.Flush();
+                return ms.ToArray();
+            }
+        }
+
         public static byte[] ImageToByte(Image img)
         {
 
@@ -105,7 +117,7 @@ namespace mLauncher.Base
                 encoder.Frames.Add(BitmapFrame.Create(image as BitmapSource));
                 encoder.Save(ms);
                 ms.Flush();
-                return System.Drawing.Image.FromStream(ms);
+                return Image.FromStream(ms);
             }
         }
 

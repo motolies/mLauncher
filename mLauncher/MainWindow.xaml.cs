@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace mLauncher
@@ -81,8 +82,14 @@ namespace mLauncher
                         };
                         button.AllowDrop = true;
                         button.Click += new RoutedEventHandler(Button_Click);
+
                         button.DragEnter += new DragEventHandler(Button_DragEnter);
                         button.Drop += new DragEventHandler(Button_Drop);
+                        button.PreviewMouseDown += new MouseButtonEventHandler( Button_PreviewMouseDown);
+                        button.PreviewMouseMove +=new MouseEventHandler( Button_PreviewMouseMove);
+                        button.PreviewMouseUp += new MouseButtonEventHandler( Button_PreviewMouseUp);
+
+
                         Grid.SetRow(button, r);
                         Grid.SetColumn(button, c);
                         grid.Children.Add(button);
@@ -94,6 +101,7 @@ namespace mLauncher
                         {
                             button.Text = rButton.Field<string>("Name");
                             button.IconImage = IconManager.ByteToImage(rButton.Field<byte[]>("Icon"));
+                            button.Path = rButton.Field<string>("Path");
                         }
 
                     }
@@ -106,85 +114,17 @@ namespace mLauncher
             }
         }
 
+    
 
-        private bool InsertButton(MButton btn, string path)
-        {
-            // 파일명 읽어와야 함
-            string fileName = Path.GetFileName(path);
-            //Bitmap bitIcon = IconManager.ToBitmap(path);
-            ImageSource imgIcon = IconManager.GetIcon(path);
-            System.Drawing.Image image = IconManager.ImageSourceToImage(imgIcon);
 
-            using (Bitmap bitIcon = new Bitmap(image, new System.Drawing.Size(64, 64)))
-            {
-                byte[] baIcon = IconManager.ImageToByte(bitIcon);
 
-                if (DataBase.InsertButton(btn.TabId, btn.Col, btn.Row, fileName, path, baIcon) < 1)
-                    return false;
-            }
 
-            btn.IconImage = imgIcon;
-            btn.Text = fileName;
-            return true;
-        }
-        private bool DeleteButton(MButton btn)
-        {
-            throw new NotImplementedException();
 
-            //if (DB.ExecuteNonQuery(string.Format("Delete From Buttons Where ID = '{0}'", btn.Name)) < 1)
-            //    return false;
 
-            //btn.Image = null;
-            //btn.Title = string.Empty;
-            //return true;
-        }
 
-        private void Button_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(MButton)))
-            {
-                // 버튼끼리의 위치이동 구현예정
-
-                throw new NotImplementedException();
-
-                //var origin = e.Data.GetData(typeof(MButton)) as MButton;
-                //var btn = sender as MButton;
-                //if (origin.Name != btn.Name)
-                //{
-                //    string oriPath = DB.ExecuteValue<string>(string.Format("SELECT Path FROM Buttons WHERE ID = '{0}'", origin.Name));
-
-                //    string path = oriPath;
-                //    if (!File.Exists(path) && !Directory.Exists(path))
-                //        return;
-
-                //    if (PathManager.GetType(oriPath) == PathManager.PathType.Shotcut)
-                //        path = PathManager.AbsolutePath(oriPath);
-
-                //    InsertButton(btn, path);
-                //    DeleteButton(origin);
-                //}
-            }
-            else
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                foreach (string file in files)
-                {
-                    string path = file;
-                    if (!File.Exists(path) && !Directory.Exists(path))
-                        return;
-
-                    if (PathManager.GetType(file) == PathManager.PathType.Shotcut)
-                        path = PathManager.AbsolutePath(file);
-
-                    var btn = sender as MButton;
-
-                    string tabId = ((TabItem)((Grid)btn.Parent).Parent).Tag.ToString();
-
-                    InsertButton(btn, path);
-                }
-            }
-
-        }
+        #region drag and drop
+        private bool DraggingFromGrid = false;
+        private System.Windows.Point DraggingStartPoint = new System.Windows.Point();
 
         private void Button_DragEnter(object sender, DragEventArgs e)
         {
@@ -193,6 +133,110 @@ namespace mLauncher
             else if (e.Data.GetDataPresent(typeof(MButton)))
                 e.Effects = DragDropEffects.Copy;
         }
+
+        private void Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DraggingFromGrid = true;
+                DraggingStartPoint = e.GetPosition(this);
+            }
+        }
+
+        private void Button_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            var button = sender as MButton;
+
+            if (DraggingFromGrid && button.IconImage != null)
+            {
+                System.Windows.Point point = e.GetPosition(this);
+                if (System.Math.Abs(point.X - DraggingStartPoint.X) > 10 || System.Math.Abs(point.Y - DraggingStartPoint.Y) > 10)
+                {
+                    DraggingFromGrid = false;
+                    
+                    DragDrop.DoDragDrop((MButton)sender, button, DragDropEffects.Copy);
+
+                    Console.WriteLine(" mouse up ");
+                }
+            }
+        }
+        private void Button_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (DraggingFromGrid)
+            {
+                DraggingFromGrid = false;
+            }
+        }
+        #endregion
+
+
+        private bool InsertButton(MButton btn, string path)
+        {
+            // 파일명 읽어와야 함
+            string fileName = Path.GetFileName(path);
+            ImageSource imgIcon = IconManager.GetIcon(path);
+            byte[] baIcon = IconManager.ImageSourceToByte(imgIcon);
+
+            if (DataBase.InsertButton(btn.TabId, btn.Col, btn.Row, fileName, path, baIcon) < 1)
+                return false;
+
+            btn.IconImage = imgIcon;
+            btn.Text = fileName;
+            btn.Path = path;
+            return true;
+        }
+
+        private bool DeleteButton(MButton btn)
+        {
+
+            if (DataBase.DeleteButton(btn.TabId, btn.Col, btn.Row) < 1)
+                return false;
+
+            btn.IconImage = null;
+            btn.Text = string.Empty;
+            btn.Path = string.Empty;
+            return true;
+        }
+
+        private void Button_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(MButton)))
+            {
+                // 버튼끼리의 위치이동 구현예정
+
+                var origin = e.Data.GetData(typeof(MButton)) as MButton;
+                var btn = sender as MButton;
+                if (origin.Col != btn.Col || origin.Row != btn.Row)
+                {
+                    string path = origin.Path;
+                    if (!File.Exists(path) && !Directory.Exists(path))
+                        return;
+
+                    if (PathManager.GetType(path) == PathManager.PathType.Shotcut)
+                        path = PathManager.AbsolutePath(path);
+
+                    InsertButton(btn, path);
+                    DeleteButton(origin);
+                }
+            }
+            else
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                string path = files.AsEnumerable().First(); ;
+                if (!File.Exists(path) && !Directory.Exists(path))
+                    return;
+
+                if (PathManager.GetType(path) == PathManager.PathType.Shotcut)
+                    path = PathManager.AbsolutePath(path);
+
+                var btn = sender as MButton;
+                InsertButton(btn, path);
+            }
+
+        }
+
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
