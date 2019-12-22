@@ -51,17 +51,16 @@ namespace mLauncher
 
             this.PreviewMouseWheel += new MouseWheelEventHandler(Window_PreviewMouseWheel);
 
-
-
             SetContextMenu();
             DrawLauncher();
             LocalKeyboardHook();
             GlobalKeyboardHook();
             MouseHook();
             LocalTimer();
-
         }
 
+
+ 
 
         #region context menu
 
@@ -123,7 +122,10 @@ namespace mLauncher
                     Process.Start("explorer.exe", Path.GetDirectoryName(placementTarget.Path));
                     break;
                 case "Settings":
-                    System.Windows.MessageBox.Show("설정은 준비중입니다.");
+                    SettingWindow settingWindow = new SettingWindow();
+                    settingWindow.Owner = this;
+                    settingWindow.ShowDialog();
+
                     break;
                 default:
                     break;
@@ -298,13 +300,19 @@ namespace mLauncher
             // CommandBinding에서 무엇을 눌렀나 확인해보려고 했는데, 프레임워크가 감춘다...
             LocalHotKey.InputGestures.Add(new KeyGesture(Key.F, System.Windows.Input.ModifierKeys.Control));
             LocalHotKey.InputGestures.Add(new KeyGesture(Key.S, System.Windows.Input.ModifierKeys.Control));
+            LocalHotKey.InputGestures.Add(new KeyGesture(Key.Escape, System.Windows.Input.ModifierKeys.None));
             this.CommandBindings.Add(new CommandBinding(LocalHotKey, Local_KeyPressed));
         }
 
         private void Local_KeyPressed(object sender, ExecutedRoutedEventArgs e)
         {
             // 이렇게 구분이 가능한 거 같긴 한데 꼼수인거 같다
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+            if (Keyboard.IsKeyDown(Key.Escape))
+            {
+                // 숨기기
+                Visibility = Visibility.Collapsed;
+            }
+            else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
             {
                 Console.WriteLine("LeftCtrl + S");
             }
@@ -447,10 +455,10 @@ namespace mLauncher
         {
             this.Left = CursorPoint.X;
             this.Top = CursorPoint.Y;
-            this.Topmost = true;
             if (this.WindowState == WindowState.Minimized)
                 this.WindowState = WindowState.Normal;
             this.Show();
+            this.Topmost = true;
         }
 
 
