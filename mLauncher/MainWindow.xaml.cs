@@ -49,13 +49,19 @@ namespace mLauncher
             colCount = int.Parse(cols);
             rowCount = int.Parse(rows);
 
+            this.PreviewMouseWheel += new MouseWheelEventHandler(Window_PreviewMouseWheel);
+
+
+
             SetContextMenu();
             DrawLauncher();
+            LocalKeyboardHook();
             GlobalKeyboardHook();
             MouseHook();
             LocalTimer();
 
         }
+
 
         #region context menu
 
@@ -124,7 +130,7 @@ namespace mLauncher
             }
         }
 
-#endregion
+        #endregion
 
         private void DrawLauncher()
         {
@@ -156,7 +162,7 @@ namespace mLauncher
                                 Width = new GridLength(1, GridUnitType.Star)
                             });
                         }
-                        
+
                         // col 선택 후 버튼 삽입
                         MButton button = new MButton()
                         {
@@ -195,16 +201,6 @@ namespace mLauncher
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
 
         #region drag and drop
 
@@ -294,6 +290,59 @@ namespace mLauncher
 
         #endregion
 
+        #region local hotkey
+
+        public static RoutedCommand LocalHotKey = new RoutedCommand();
+        private void LocalKeyboardHook()
+        {
+            // CommandBinding에서 무엇을 눌렀나 확인해보려고 했는데, 프레임워크가 감춘다...
+            LocalHotKey.InputGestures.Add(new KeyGesture(Key.F, System.Windows.Input.ModifierKeys.Control));
+            LocalHotKey.InputGestures.Add(new KeyGesture(Key.S, System.Windows.Input.ModifierKeys.Control));
+            this.CommandBindings.Add(new CommandBinding(LocalHotKey, Local_KeyPressed));
+        }
+
+        private void Local_KeyPressed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // 이렇게 구분이 가능한 거 같긴 한데 꼼수인거 같다
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+            {
+                Console.WriteLine("LeftCtrl + S");
+            }
+            else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.F))
+            {
+                Console.WriteLine("LeftALT + S");
+            }
+
+
+
+        }
+
+
+
+
+
+
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var maxIndex = tabControl.Items.Count;
+            var currentIndex = tabControl.SelectedIndex;
+
+            if (e.Delta > 0)
+            {
+                if (0 < currentIndex)
+                    tabControl.SelectedIndex--;
+            }
+            else
+            {
+                if (maxIndex > currentIndex)
+                    tabControl.SelectedIndex++;
+            }
+        }
+
+
+
+        #endregion
+
         #region hook
 
 
@@ -314,7 +363,7 @@ namespace mLauncher
 
                     if (e.Message.ToString().Contains("BUTTONDOWN"))
                     {
-                        Console.WriteLine(string.Format("prev : {0}, cur : {1}", prevClick, e.Message));
+                        //Console.WriteLine(string.Format("prev : {0}, cur : {1}", prevClick, e.Message));
                         if (!string.IsNullOrWhiteSpace(prevClick) && prevClick != e.Message.ToString())
                         {
                             Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
@@ -332,14 +381,14 @@ namespace mLauncher
 
         private void GlobalKeyboardHook()
         {
-            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
             hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.S);
             hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Keys.Delete);
 
         }
 
-        private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
+        private void Global_KeyPressed(object sender, KeyPressedEventArgs e)
         {
             Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
             if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.S)

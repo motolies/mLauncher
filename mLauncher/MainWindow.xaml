@@ -7,7 +7,7 @@
         xmlns:control="clr-namespace:mLauncher.Control"
         mc:Ignorable="d"
         Title="mLauncher" Height="300" Width="500" Closing="Window_Closing" >
-    
+
     <Grid>
 
         <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
