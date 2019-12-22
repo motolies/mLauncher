@@ -32,6 +32,7 @@ namespace mLauncher
         private DataTable buttons;
         static System.Threading.Timer listClearTimer;
         private System.Windows.Point CursorPoint = new System.Windows.Point();
+        private System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
 
         public MainWindow()
         {
@@ -48,15 +49,82 @@ namespace mLauncher
             colCount = int.Parse(cols);
             rowCount = int.Parse(rows);
 
+            SetContextMenu();
             DrawLauncher();
             GlobalKeyboardHook();
             MouseHook();
             LocalTimer();
-            
+
         }
 
-     
+        #region context menu
 
+        private void SetContextMenu()
+        {
+            contextMenu.AddHandler(System.Windows.Controls.MenuItem.ClickEvent, new RoutedEventHandler(MenuItem_Click));
+
+            var MenuItems = new Dictionary<string, string>()
+            {
+                { "DeleteButton", "삭제" },
+                { "Explorer", "탐색기" },
+                { "Settings", "설정" },
+            };
+
+            foreach (var item in MenuItems)
+            {
+                var menu = new System.Windows.Controls.MenuItem();
+                menu.Name = item.Key;
+                menu.Header = item.Value;
+                contextMenu.Items.Add(menu);
+            }
+        }
+
+        private void Button_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var btn = sender as MButton;
+
+            System.Windows.Controls.ContextMenu cm = btn.ContextMenu;
+
+            if (string.IsNullOrWhiteSpace(btn.Path))
+            {
+                foreach (System.Windows.Controls.MenuItem mi in cm.Items)
+                {
+                    if (mi.Name == "DeleteButton" || mi.Name == "Explorer")
+                        mi.IsEnabled = false;
+                }
+            }
+            else
+            {
+                foreach (System.Windows.Controls.MenuItem mi in cm.Items)
+                {
+                    if (mi.Name == "DeleteButton" || mi.Name == "Explorer")
+                        mi.IsEnabled = true;
+                }
+            }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var placementTarget = ((System.Windows.Controls.ContextMenu)sender).PlacementTarget as MButton;
+            var menuItem = e.Source as System.Windows.Controls.MenuItem;
+
+            switch (menuItem.Name)
+            {
+                case "DeleteButton":
+                    DeleteButton(placementTarget);
+                    break;
+                case "Explorer":
+                    Process.Start("explorer.exe", Path.GetDirectoryName(placementTarget.Path));
+                    break;
+                case "Settings":
+                    System.Windows.MessageBox.Show("설정은 준비중입니다.");
+                    break;
+                default:
+                    break;
+            }
+        }
+
+#endregion
 
         private void DrawLauncher()
         {
@@ -88,8 +156,7 @@ namespace mLauncher
                                 Width = new GridLength(1, GridUnitType.Star)
                             });
                         }
-
-
+                        
                         // col 선택 후 버튼 삽입
                         MButton button = new MButton()
                         {
@@ -99,6 +166,9 @@ namespace mLauncher
                         };
                         button.AllowDrop = true;
                         button.Click += new RoutedEventHandler(Button_Click);
+
+                        button.ContextMenu = this.contextMenu;
+                        button.ContextMenuOpening += Button_ContextMenuOpening;
 
                         button.DragEnter += new System.Windows.DragEventHandler(Button_DragEnter);
                         button.Drop += new System.Windows.DragEventHandler(Button_Drop);
@@ -125,6 +195,8 @@ namespace mLauncher
                 }
             }
         }
+
+
 
 
 
