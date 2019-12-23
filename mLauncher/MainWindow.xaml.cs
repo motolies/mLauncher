@@ -12,10 +12,11 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
+using Form = System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Runtime.InteropServices;
 
 namespace mLauncher
 {
@@ -30,7 +31,6 @@ namespace mLauncher
         private DataTable tabs;
         private DataTable buttons;
         static System.Threading.Timer listClearTimer;
-        private System.Windows.Point CursorPoint = new System.Windows.Point();
         private System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
 
         public MainWindow()
@@ -372,6 +372,21 @@ namespace mLauncher
 
         #region global hotkey hook
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern bool GetCursorPos(out POINT pt);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public POINT(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+        }
 
         KeyboardHook hook = new KeyboardHook();
 
@@ -379,19 +394,19 @@ namespace mLauncher
         {
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.A);
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Keys.Delete);
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Form.Keys.Delete);
 
         }
 
         private void Global_KeyPressed(object sender, KeyPressedEventArgs e)
         {
             Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
-            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.A)
+            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.A)
             {
                 WindowShow();
             }
-            else if (e.Modifier == mHOOK.Keyboad.ModifierKeys.None && e.Key == Keys.Delete)
+            else if (e.Modifier == mHOOK.Keyboad.ModifierKeys.None && e.Key == Form.Keys.Delete)
             {
                 Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
                 {
@@ -441,6 +456,12 @@ namespace mLauncher
 
         private void WindowShow()
         {
+            // 현재 커서위치 알아오기
+
+            POINT CursorPoint = new POINT();
+
+            GetCursorPos(out CursorPoint);
+
             this.Left = CursorPoint.X;
             this.Top = CursorPoint.Y;
             if (this.WindowState == WindowState.Minimized)
