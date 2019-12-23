@@ -1,8 +1,11 @@
-﻿using mLauncher.Base;
+﻿using IWshRuntimeLibrary;
+using mLauncher.Base;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +16,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace mLauncher
 {
@@ -85,6 +89,7 @@ namespace mLauncher
             DataBase.SetSetting("ROWS", RowCount.ToString());
             DataBase.SetSetting("TOPMOST", IsTopMost ? "TRUE" : "FALSE");
             DataBase.SetSetting("STARTUP", StartUp ? "TRUE" : "FALSE");
+            InstallStartUp(StartUp);
 
             DataBase.SetTabs(Tabs);
 
@@ -93,16 +98,43 @@ namespace mLauncher
             Application.Current.Shutdown();
         }
 
+        private void InstallStartUp(bool status)
+        {
+            /*
+             * Environment.SpecialFolder.CommonStartup 모든사용자
+             * Environment.SpecialFolder.Startup 현재사용자
+             */
+
+            var startup = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            //var fileName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+            var projectName = Assembly.GetExecutingAssembly().GetName().Name;
+
+            string file = Path.Combine(startup, string.Format("{0}.lnk", projectName));
+            FileInfo fileInfo = new FileInfo(file);
+
+            if (status)
+            {
+                if(fileInfo.Exists)
+                    fileInfo.Delete();
+
+                WshShell shell = new WshShell();
+                IWshShortcut shortcut = (IWshShortcut)shell.CreateShortcut(file);
+                shortcut.TargetPath = Assembly.GetEntryAssembly().Location;
+                shortcut.Description = string.Format("{0} link", projectName);
+                
+                shortcut.Save();
+            }
+            else
+            {
+                fileInfo.Delete();
+            }
+
+        }
+
         private void CancelWindows(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
-
-
-
-
-
 
 
         #region hotkey

@@ -17,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace mLauncher
 {
@@ -37,7 +38,10 @@ namespace mLauncher
         {
             InitializeComponent();
 
-            DataBase.InitDB();
+            //string dbFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Settings.db");
+
+            string dbFile = Path.Combine(Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory), "Sssssssssssettings.db");
+            DataBase.InitDB(dbFile);
 
             tabs = DataBase.GetTabs();
             buttons = DataBase.GetButtons();
@@ -55,10 +59,15 @@ namespace mLauncher
             LocalKeyboardHook();
             GlobalKeyboardHook();
             LocalTimer();
+
+
+
+            MessageBox.Show(dbFile);
+
         }
 
 
- 
+
 
         #region context menu
 
@@ -72,7 +81,7 @@ namespace mLauncher
                 { "Explorer", "탐색기" },
                 { "Settings", "설정" },
             };
-             
+
             foreach (var item in MenuItems)
             {
                 var menu = new System.Windows.Controls.MenuItem();
@@ -107,11 +116,11 @@ namespace mLauncher
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
             }
-            
+
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)

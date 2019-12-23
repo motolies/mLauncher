@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,16 +14,18 @@ namespace mLauncher.Base
     internal class DataBase
     {
         private static mDB.SQLite.Connection conn;
+        private static string DbFile;
 
-        static DataBase()
-        {
-            conn = new mDB.SQLite.Connection();
-            conn.Execute("select 1;");
-
-        }
+        //static DataBase()
+        //{
+        //    DbFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Settings.db");
+        //    conn = new mDB.SQLite.Connection(DbFile);
+        //    conn.Execute("select 1;");
+        //}
 
         internal static string GetSetting(string id)
         {
+            Console.WriteLine(string.Format("DB file path : {0}", DbFile));
             return conn.ExecuteValue<string>(string.Format("SELECT Value FROM Setting WHERE Id = '{0}';", id));
         }
 
@@ -87,8 +91,12 @@ namespace mLauncher.Base
         }
 
 
-        internal static void InitDB()
+        internal static void InitDB(string DbFile)
         {
+
+            conn = new mDB.SQLite.Connection(DbFile);
+            conn.Execute("select 1;");
+
             #region 스키마 조회?
             // 테이블 조회 후 테이블이 없으면 테이블을 만들고 기본값을 넣는다
             DataTable dt = conn.ExecuteReader("SELECT name FROM sqlite_master WHERE type = 'table';");

@@ -23,7 +23,9 @@ namespace mDB.SQLite
             }
             else
             {
-                string dllPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                //string dllPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string dllPath = Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory);
+
                 mDBPath = Path.Combine(dllPath, DBPath);
             }
 

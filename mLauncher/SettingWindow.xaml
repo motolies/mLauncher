@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mLauncher"
         mc:Ignorable="d"
-        Title="설정" Height="300" Width="500" WindowStartupLocation="CenterOwner" MinWidth="400" MinHeight="300" MaxWidth="800" MaxHeight="600">
+        Title="Settings" Height="300" Width="500" WindowStartupLocation="CenterOwner" MinWidth="400" MinHeight="300" MaxWidth="800" MaxHeight="600" Icon="icon.ico">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1 *" />
@@ -55,8 +55,8 @@
         </TabControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="4" >
-            <Button Content="저장" Width="40" HorizontalAlignment="Right" Click="SaveSettingsd"></Button>
-            <Button Content="취소" Width="40" HorizontalAlignment="Right" Click="CancelWindows"></Button>
+            <Button Content="Save" Width="50" HorizontalAlignment="Right" Click="SaveSettingsd"></Button>
+            <Button Content="Cancel" Width="50" HorizontalAlignment="Right" Click="CancelWindows"></Button>
         </StackPanel>
 
     </Grid>
