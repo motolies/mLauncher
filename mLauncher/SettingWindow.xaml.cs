@@ -79,7 +79,7 @@ namespace mLauncher
 
 
 
-        public void SaveSettingsd(object sender, RoutedEventArgs e )
+        public void SaveSettingsd(object sender, RoutedEventArgs e)
         {
             DataBase.SetSetting("COLS", ColumnCount.ToString());
             DataBase.SetSetting("ROWS", RowCount.ToString());
@@ -118,10 +118,30 @@ namespace mLauncher
             if (Keyboard.IsKeyDown(Key.Escape))
                 this.Close();
         }
+
+
         #endregion
 
+        private void AddRow(object sender, RoutedEventArgs e)
+        {
+            DataRow row = Tabs.NewRow();
+            row["Id"] = string.Format("TAB{0}", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            row["Name"] = "temp";
+            var curSeq = Tabs.AsEnumerable().OrderByDescending(r => r.Field<Int64>("Seq")).First().Field<Int64>("Seq");
+            row["Seq"] = curSeq + 1;
+            Tabs.Rows.Add(row);
+        }
 
+        private void DeleteRow(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                DataRow row = (gridView.SelectedItem as DataRowView).Row;
+                row.Delete();
+            }
+            catch (Exception) { }
 
+        }
     }
 }
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mLauncher"
         mc:Ignorable="d"
-        Title="설정" Height="300" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="설정" Height="300" Width="500" WindowStartupLocation="CenterOwner" MinWidth="400" MinHeight="300" MaxWidth="800" MaxHeight="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1 *" />
@@ -39,7 +39,18 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Tabs">
-                <DataGrid ItemsSource="{Binding Tabs}" CanUserAddRows="False"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="4" >
+                        <Button Content="+" Width="20" HorizontalAlignment="Center" Click="AddRow" VerticalAlignment="Center"></Button>
+                        <Button Content="-" Width="20" HorizontalAlignment="Center" Click="DeleteRow" VerticalAlignment="Center"></Button>
+                    </StackPanel>
+                    <DataGrid Name="gridView" Grid.Row="1" ItemsSource="{Binding Tabs}" CanUserAddRows="False" SelectionMode="Single"/>
+                </Grid>
+                
             </TabItem>
         </TabControl>
 

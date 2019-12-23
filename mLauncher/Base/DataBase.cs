@@ -48,7 +48,7 @@ namespace mLauncher.Base
                 else if (row.RowState == DataRowState.Modified)
                     conn.Execute(string.Format("UPDATE Tab SET Name = '{0}', Seq = {1} WHERE Id = '{2}';", row["Name"].ToString(), row["Seq"].ToString(), row["Id"].ToString()));
                 else if (row.RowState == DataRowState.Deleted)
-                    conn.Execute(string.Format("DELETE FROM Tab WHERE Id = '{0}';", row["Id"].ToString()));
+                    conn.Execute(string.Format("DELETE FROM Tab WHERE Id = '{0}';", row["Id", DataRowVersion.Original].ToString()));
             }
         }
 
