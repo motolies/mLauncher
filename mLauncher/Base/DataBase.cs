@@ -39,6 +39,18 @@ namespace mLauncher.Base
         {
             return conn.ExecuteReader("SELECT * FROM Tab ORDER BY Seq;");
         }
+        internal static void SetTabs(DataTable tabs)
+        {
+            foreach (DataRow row in tabs.Rows)
+            {
+                if (row.RowState == DataRowState.Added)
+                    conn.Execute(string.Format("INSERT OR IGNORE INTO Tab(Id, Name, Seq) VALUES('{0}', '{1}', {2});", row["Id"].ToString(), row["Name"].ToString(), row["Seq"].ToString()));
+                else if (row.RowState == DataRowState.Modified)
+                    conn.Execute(string.Format("UPDATE Tab SET Name = '{0}', Seq = {1} WHERE Id = '{2}';", row["Name"].ToString(), row["Seq"].ToString(), row["Id"].ToString()));
+                else if (row.RowState == DataRowState.Deleted)
+                    conn.Execute(string.Format("DELETE FROM Tab WHERE Id = '{0}';", row["Id"].ToString()));
+            }
+        }
 
         internal static DataTable GetButtons()
         {

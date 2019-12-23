@@ -1,6 +1,7 @@
 ﻿using mLauncher.Base;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,18 @@ namespace mLauncher
             RowCount = int.Parse(DataBase.GetSetting("ROWS"));
             IsTopMost = bool.Parse(DataBase.GetSetting("TOPMOST"));
             StartUp = bool.Parse(DataBase.GetSetting("STARTUP"));
+            Tabs = DataBase.GetTabs();
+            Tabs.Columns["Id"].ReadOnly = true;
+
         }
+
+
+        public DataTable Tabs
+        {
+            get { return (DataTable)GetValue(TabsProperty); }
+            set { SetValue(TabsProperty, value); }
+        }
+        public static readonly DependencyProperty TabsProperty = DependencyProperty.Register("Tabs", typeof(DataTable), typeof(SettingWindow));
 
         public int ColumnCount
         {
@@ -74,6 +86,9 @@ namespace mLauncher
             DataBase.SetSetting("TOPMOST", IsTopMost ? "TRUE" : "FALSE");
             DataBase.SetSetting("STARTUP", StartUp ? "TRUE" : "FALSE");
 
+            DataBase.SetTabs(Tabs);
+
+            // 재시작
             System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
