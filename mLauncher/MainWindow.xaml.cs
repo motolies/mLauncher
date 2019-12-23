@@ -1,5 +1,4 @@
-﻿using EventHook;
-using mEx;
+﻿using mEx;
 using mHOOK.Keyboad;
 using mLauncher.Base;
 using mLauncher.Control;
@@ -55,7 +54,6 @@ namespace mLauncher
             DrawLauncher();
             LocalKeyboardHook();
             GlobalKeyboardHook();
-            MouseHook();
             LocalTimer();
         }
 
@@ -74,7 +72,7 @@ namespace mLauncher
                 { "Explorer", "탐색기" },
                 { "Settings", "설정" },
             };
-
+             
             foreach (var item in MenuItems)
             {
                 var menu = new System.Windows.Controls.MenuItem();
@@ -86,26 +84,34 @@ namespace mLauncher
 
         private void Button_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var btn = sender as MButton;
-
-            System.Windows.Controls.ContextMenu cm = btn.ContextMenu;
-
-            if (string.IsNullOrWhiteSpace(btn.Path))
+            try
             {
-                foreach (System.Windows.Controls.MenuItem mi in cm.Items)
+                var btn = sender as MButton;
+
+                System.Windows.Controls.ContextMenu cm = btn.ContextMenu;
+
+                if (string.IsNullOrWhiteSpace(btn.Path))
                 {
-                    if (mi.Name == "DeleteButton" || mi.Name == "Explorer")
-                        mi.IsEnabled = false;
+                    foreach (System.Windows.Controls.MenuItem mi in cm.Items)
+                    {
+                        if (mi.Name == "DeleteButton" || mi.Name == "Explorer")
+                            mi.IsEnabled = false;
+                    }
+                }
+                else
+                {
+                    foreach (System.Windows.Controls.MenuItem mi in cm.Items)
+                    {
+                        if (mi.Name == "DeleteButton" || mi.Name == "Explorer")
+                            mi.IsEnabled = true;
+                    }
                 }
             }
-            else
+            catch(Exception ex)
             {
-                foreach (System.Windows.Controls.MenuItem mi in cm.Items)
-                {
-                    if (mi.Name == "DeleteButton" || mi.Name == "Explorer")
-                        mi.IsEnabled = true;
-                }
+                System.Windows.MessageBox.Show(ex.Message);
             }
+            
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -367,37 +373,6 @@ namespace mLauncher
         #region global hotkey hook
 
 
-        static string prevClick;
-
-        private void MouseHook()
-        {
-            using (var eventHookFactory = new EventHookFactory())
-            {
-                var mouseWatcher = eventHookFactory.GetMouseWatcher();
-                mouseWatcher.Start();
-                mouseWatcher.OnMouseInput += (s, e) =>
-                {
-                    // Console.WriteLine(string.Format("Mouse event {0} at point {1},{2}", e.Message.ToString(), e.Point.x, e.Point.y));
-
-                    CursorPoint.X = e.Point.x;
-                    CursorPoint.Y = e.Point.y;
-
-                    if (e.Message.ToString().Contains("BUTTONDOWN"))
-                    {
-                        //Console.WriteLine(string.Format("prev : {0}, cur : {1}", prevClick, e.Message));
-                        if (!string.IsNullOrWhiteSpace(prevClick) && prevClick != e.Message.ToString())
-                        {
-                            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-                            {
-                                WindowShow();
-                            }));
-                        }
-                        prevClick = e.Message.ToString();
-                    }
-                };
-            }
-        }
-
         KeyboardHook hook = new KeyboardHook();
 
         private void GlobalKeyboardHook()
@@ -519,7 +494,6 @@ namespace mLauncher
             //스레드 타이머
             TimerCallback tc = new TimerCallback((o) =>
             {
-                prevClick = string.Empty;
                 Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
                 {
                     //txtDatetime.Text = DateTime.Now.ToString("yyyy-MM-dd(ddd) tt hh:mm:ss");
