@@ -34,8 +34,8 @@
 
                     <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding ColumnCount}" />
                     <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding RowCount}" />
-                    <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
-                    <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                    <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding IsTopMost}"/>
+                    <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding StartUp}"/>
 
                 </Grid>
             </TabItem>
@@ -44,8 +44,8 @@
         </TabControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="4" >
-            <Button Content="저장" Width="40" HorizontalAlignment="Right"></Button>
-            <Button Content="취소" Width="40" HorizontalAlignment="Right"></Button>
+            <Button Content="저장" Width="40" HorizontalAlignment="Right" Click="SaveSettingsd"></Button>
+            <Button Content="취소" Width="40" HorizontalAlignment="Right" Click="CancelWindows"></Button>
         </StackPanel>
 
     </Grid>

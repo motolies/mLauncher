@@ -122,9 +122,7 @@ namespace mLauncher
                     Process.Start("explorer.exe", Path.GetDirectoryName(placementTarget.Path));
                     break;
                 case "Settings":
-                    SettingWindow settingWindow = new SettingWindow();
-                    settingWindow.Owner = this;
-                    settingWindow.ShowDialog();
+                    SettingWindowsShow();
 
                     break;
                 default:
@@ -133,6 +131,13 @@ namespace mLauncher
         }
 
         #endregion
+
+        private void SettingWindowsShow()
+        {
+            SettingWindow settingWindow = new SettingWindow();
+            settingWindow.Owner = this;
+            settingWindow.ShowDialog();
+        }
 
         private void DrawLauncher()
         {
@@ -298,9 +303,13 @@ namespace mLauncher
         private void LocalKeyboardHook()
         {
             // CommandBinding에서 무엇을 눌렀나 확인해보려고 했는데, 프레임워크가 감춘다...
-            LocalHotKey.InputGestures.Add(new KeyGesture(Key.F, System.Windows.Input.ModifierKeys.Control));
-            LocalHotKey.InputGestures.Add(new KeyGesture(Key.S, System.Windows.Input.ModifierKeys.Control));
+
             LocalHotKey.InputGestures.Add(new KeyGesture(Key.Escape, System.Windows.Input.ModifierKeys.None));
+            LocalHotKey.InputGestures.Add(new KeyGesture(Key.F12, System.Windows.Input.ModifierKeys.None));
+
+            //LocalHotKey.InputGestures.Add(new KeyGesture(Key.F, System.Windows.Input.ModifierKeys.Control));
+            //LocalHotKey.InputGestures.Add(new KeyGesture(Key.S, System.Windows.Input.ModifierKeys.Control));
+
             this.CommandBindings.Add(new CommandBinding(LocalHotKey, Local_KeyPressed));
         }
 
@@ -312,16 +321,20 @@ namespace mLauncher
                 // 숨기기
                 Visibility = Visibility.Collapsed;
             }
-            else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+            else if (Keyboard.IsKeyDown(Key.F12))
             {
-                Console.WriteLine("LeftCtrl + S");
+                SettingWindowsShow();
             }
-            else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.F))
-            {
-                Console.WriteLine("LeftALT + S");
-            }
+            //else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
+            //{
+            //    Console.WriteLine("LeftCtrl + S");
+            //}
+            //else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.F))
+            //{
+            //    Console.WriteLine("LeftALT + S");
+            //}
 
-
+            
 
         }
 
@@ -351,7 +364,7 @@ namespace mLauncher
 
         #endregion
 
-        #region hook
+        #region global hotkey hook
 
 
         static string prevClick;
@@ -391,7 +404,7 @@ namespace mLauncher
         {
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.S);
+            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Keys.A);
             hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Keys.Delete);
 
         }
@@ -399,7 +412,7 @@ namespace mLauncher
         private void Global_KeyPressed(object sender, KeyPressedEventArgs e)
         {
             Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
-            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.S)
+            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Keys.A)
             {
                 WindowShow();
             }
