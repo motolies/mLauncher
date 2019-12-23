@@ -312,6 +312,7 @@ namespace mLauncher
 
             LocalHotKey.InputGestures.Add(new KeyGesture(Key.Escape, System.Windows.Input.ModifierKeys.None));
             LocalHotKey.InputGestures.Add(new KeyGesture(Key.F12, System.Windows.Input.ModifierKeys.None));
+            LocalHotKey.InputGestures.Add(new KeyGesture(Key.Delete, System.Windows.Input.ModifierKeys.None));
 
             //LocalHotKey.InputGestures.Add(new KeyGesture(Key.F, System.Windows.Input.ModifierKeys.Control));
             //LocalHotKey.InputGestures.Add(new KeyGesture(Key.S, System.Windows.Input.ModifierKeys.Control));
@@ -331,19 +332,54 @@ namespace mLauncher
             {
                 SettingWindowsShow();
             }
-            //else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.S))
-            //{
-            //    Console.WriteLine("LeftCtrl + S");
-            //}
-            //else if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.F))
-            //{
-            //    Console.WriteLine("LeftALT + S");
-            //}
+            else if (Keyboard.IsKeyDown(Key.Delete))
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                {
+                    System.Windows.Point point = Mouse.GetPosition(System.Windows.Application.Current.MainWindow);
+                    //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                    VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
+                }));
+            }
 
-            
+
 
         }
 
+
+        private HitTestResultBehavior MyHitTestResult(HitTestResult result)
+        {
+            Console.WriteLine("result : " + result.VisualHit.GetType());
+
+            // wpf 에서 의도적으로 구현했는지 모르겠지만, userControl은 hitTest에서 result로 떨어지지 않는다.
+            // 그래서 눈에 보이는 놈 하나만 발견하면 다 중지시켜버리고
+            // 돔 구조니까 부모를 따라가도록 한다.
+
+            var std = result.VisualHit as DependencyObject;
+            MButton button = std.GetVisualParent<MButton>();
+
+            DeleteButton(button);
+
+            return HitTestResultBehavior.Stop;
+
+        }
+
+        private HitTestFilterBehavior MyHitTestFilter(DependencyObject potentialHitTestTarget)
+        {
+            // https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?redirectedfrom=MSDN#using_a_hit_test_filter_callback
+
+            // if문에 있는 애들은 모두 제외대상 클래스
+            if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Label))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Image))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.TextBlock))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Border))
+                return HitTestFilterBehavior.ContinueSkipSelf;
+            else
+                return HitTestFilterBehavior.Continue;
+        }
 
 
 
@@ -395,7 +431,7 @@ namespace mLauncher
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
             hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Form.Keys.Delete);
+            // hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Form.Keys.Delete);
 
         }
 
@@ -406,51 +442,10 @@ namespace mLauncher
             {
                 WindowShow();
             }
-            else if (e.Modifier == mHOOK.Keyboad.ModifierKeys.None && e.Key == Form.Keys.Delete)
-            {
-                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-                {
-                    System.Windows.Point point = Mouse.GetPosition(System.Windows.Application.Current.MainWindow);
-                    //VisualTreeHelper.HitTest(this, new HitTestFilterCallback(MyHitTestFilter), new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
-                    VisualTreeHelper.HitTest(this, null, new HitTestResultCallback(MyHitTestResult), new PointHitTestParameters(point));
-                }));
-            }
-        }
-
-
-        private HitTestResultBehavior MyHitTestResult(HitTestResult result)
-        {
-            Console.WriteLine("result : " + result.VisualHit.GetType());
-
-            // wpf 에서 의도적으로 구현했는지 모르겠지만, userControl은 hitTest에서 result로 떨어지지 않는다.
-            // 그래서 눈에 보이는 놈 하나만 발견하면 다 중지시켜버리고
-            // 돔 구조니까 부모를 따라가도록 한다.
-
-            var std = result.VisualHit as DependencyObject;
-            MButton button = std.GetVisualParent<MButton>();
-
-            DeleteButton(button);
-
-            return HitTestResultBehavior.Stop;
 
         }
 
-        private HitTestFilterBehavior MyHitTestFilter(DependencyObject potentialHitTestTarget)
-        {
-            // https://docs.microsoft.com/en-us/dotnet/framework/wpf/graphics-multimedia/hit-testing-in-the-visual-layer?redirectedfrom=MSDN#using_a_hit_test_filter_callback
 
-            // if문에 있는 애들은 모두 제외대상 클래스
-            if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Label))
-                return HitTestFilterBehavior.ContinueSkipSelf;
-            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Image))
-                return HitTestFilterBehavior.ContinueSkipSelf;
-            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.TextBlock))
-                return HitTestFilterBehavior.ContinueSkipSelf;
-            else if (potentialHitTestTarget.GetType() == typeof(System.Windows.Controls.Border))
-                return HitTestFilterBehavior.ContinueSkipSelf;
-            else
-                return HitTestFilterBehavior.Continue;
-        }
 
         #endregion
 
