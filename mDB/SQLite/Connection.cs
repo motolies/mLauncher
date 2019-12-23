@@ -16,6 +16,7 @@ namespace mDB.SQLite
 
         public Connection(string dbpath = null)
         {
+
             string mDBPath = string.Empty;
             if (!string.IsNullOrWhiteSpace(dbpath))
             {
@@ -23,19 +24,18 @@ namespace mDB.SQLite
             }
             else
             {
-                //string dllPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 string dllPath = Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory);
-
                 mDBPath = Path.Combine(dllPath, DBPath);
             }
 
+
             // db 파일이 있는지 검사
-            if (!System.IO.File.Exists(DBPath))
+            if (!System.IO.File.Exists(mDBPath))
             {
-                SQLiteConnection.CreateFile(DBPath);  // SQLite DB 생성
+                SQLiteConnection.CreateFile(mDBPath);  // SQLite DB 생성
             }
 
-            string ConnectionString = string.Format("Data Source={0};Version=3;", DBPath);
+            string ConnectionString = string.Format("Data Source={0};Version=3;", mDBPath);
 
             mConn = new SQLiteConnection(ConnectionString);
             mConn.Open();

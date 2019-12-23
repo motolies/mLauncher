@@ -16,12 +16,12 @@ namespace mLauncher.Base
         private static mDB.SQLite.Connection conn;
         private static string DbFile;
 
-        //static DataBase()
-        //{
-        //    DbFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Settings.db");
-        //    conn = new mDB.SQLite.Connection(DbFile);
-        //    conn.Execute("select 1;");
-        //}
+        static DataBase()
+        {
+            DbFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Settings.db");
+            conn = new mDB.SQLite.Connection(DbFile);
+            conn.Execute("select 1;");
+        }
 
         internal static string GetSetting(string id)
         {
@@ -91,12 +91,10 @@ namespace mLauncher.Base
         }
 
 
-        internal static void InitDB(string DbFile)
+        internal static void InitDB()
         {
 
-            conn = new mDB.SQLite.Connection(DbFile);
-            conn.Execute("select 1;");
-
+         
             #region 스키마 조회?
             // 테이블 조회 후 테이블이 없으면 테이블을 만들고 기본값을 넣는다
             DataTable dt = conn.ExecuteReader("SELECT name FROM sqlite_master WHERE type = 'table';");

@@ -39,9 +39,7 @@ namespace mLauncher
             InitializeComponent();
 
             //string dbFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Settings.db");
-
-            string dbFile = Path.Combine(Path.GetDirectoryName(System.AppDomain.CurrentDomain.BaseDirectory), "Sssssssssssettings.db");
-            DataBase.InitDB(dbFile);
+            DataBase.InitDB();
 
             tabs = DataBase.GetTabs();
             buttons = DataBase.GetButtons();
@@ -59,10 +57,6 @@ namespace mLauncher
             LocalKeyboardHook();
             GlobalKeyboardHook();
             LocalTimer();
-
-
-
-            MessageBox.Show(dbFile);
 
         }
 
