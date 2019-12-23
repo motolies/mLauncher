@@ -26,6 +26,7 @@ namespace mLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool IsTopMost;
         private int tabCount = 1;
         private int colCount = 0;
         private int rowCount = 0;
@@ -38,12 +39,14 @@ namespace mLauncher
         {
             InitializeComponent();
 
-            //string dbFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Settings.db");
             DataBase.InitDB();
 
             tabs = DataBase.GetTabs();
             buttons = DataBase.GetButtons();
             tabCount = tabs.Rows.Count;
+
+            string topMost = DataBase.GetSetting("TOPMOST");
+            IsTopMost = bool.Parse(topMost);
 
             string cols = DataBase.GetSetting("COLS");
             string rows = DataBase.GetSetting("ROWS");
@@ -465,7 +468,7 @@ namespace mLauncher
             if (this.WindowState == WindowState.Minimized)
                 this.WindowState = WindowState.Normal;
             this.Show();
-            this.Topmost = true;
+            this.Topmost = IsTopMost;
         }
 
 

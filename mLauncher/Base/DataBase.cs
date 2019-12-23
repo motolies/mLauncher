@@ -14,7 +14,7 @@ namespace mLauncher.Base
     internal class DataBase
     {
         private static mDB.SQLite.Connection conn;
-        private static string DbFile;
+        internal static string DbFile;
 
         static DataBase()
         {
@@ -94,7 +94,7 @@ namespace mLauncher.Base
         internal static void InitDB()
         {
 
-         
+
             #region 스키마 조회?
             // 테이블 조회 후 테이블이 없으면 테이블을 만들고 기본값을 넣는다
             DataTable dt = conn.ExecuteReader("SELECT name FROM sqlite_master WHERE type = 'table';");

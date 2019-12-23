@@ -157,7 +157,7 @@ namespace mLauncher
         private void AddRow(object sender, RoutedEventArgs e)
         {
             DataRow row = Tabs.NewRow();
-            row["Id"] = string.Format("TAB{0}", DateTime.Now.ToString("yyyyMMddHHmmss"));
+            row["Id"] = string.Format("T{0}", DateTime.Now.ToString("yyyyMMddHHmmssfff"));
             row["Name"] = "temp";
             var curSeq = Tabs.AsEnumerable().OrderByDescending(r => r.Field<Int64>("Seq")).First().Field<Int64>("Seq");
             row["Seq"] = curSeq + 1;
