@@ -1,4 +1,4 @@
-﻿using mEx;
+﻿using mEX;
 using mHK.Keyboad;
 using mLauncher.Base;
 using mLauncher.Control;
