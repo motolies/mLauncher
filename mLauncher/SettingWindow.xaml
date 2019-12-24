@@ -26,16 +26,22 @@
                         <RowDefinition Height="1 *" />
                         <RowDefinition Height="1 *" />
                         <RowDefinition Height="1 *" />
+                        <RowDefinition Height="1 *" />
+                        <RowDefinition Height="1 *" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="ColumnCount" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="RowCount" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="IsTopMost" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="StartMenu" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Width" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Height" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="ColumnCount" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="RowCount" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="4" Text="IsTopMost" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="5" Text="StartMenu" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
 
-                    <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding ColumnCount}" />
-                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding RowCount}" />
-                    <CheckBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding IsTopMost}"/>
-                    <CheckBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding StartUp}"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding WindowWidth}" />
+                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding WindowHeight}" />
+                    <TextBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding ColumnCount}" />
+                    <TextBox Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" Width="50" Text="{Binding RowCount}" />
+                    <CheckBox Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding IsTopMost}"/>
+                    <CheckBox Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding StartUp}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Tabs">

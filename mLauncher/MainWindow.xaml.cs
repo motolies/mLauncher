@@ -26,6 +26,8 @@ namespace mLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private int WindowWidth = 0;
+        private int WindowHeight = 0;
         private bool IsTopMost;
         private int tabCount = 1;
         private int colCount = 0;
@@ -34,6 +36,8 @@ namespace mLauncher
         private DataTable buttons;
         static System.Threading.Timer listClearTimer;
         private System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
+
+        DispatcherTimer ResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 2, 0), IsEnabled = false };
 
         public MainWindow()
         {
@@ -45,6 +49,11 @@ namespace mLauncher
             buttons = DataBase.GetButtons();
             tabCount = tabs.Rows.Count;
 
+            string width = DataBase.GetSetting("WIDTH");
+            string height = DataBase.GetSetting("HEIGHT");
+            this.Width = WindowWidth = int.Parse(width);
+            this.Height = WindowHeight = int.Parse(height);
+
             string topMost = DataBase.GetSetting("TOPMOST");
             IsTopMost = bool.Parse(topMost);
 
@@ -54,6 +63,8 @@ namespace mLauncher
             rowCount = int.Parse(rows);
 
             this.PreviewMouseWheel += new MouseWheelEventHandler(Window_PreviewMouseWheel);
+            ResizeTimer.Tick += Window_ResizeTimer_Tick;
+
 
             SetContextMenu();
             DrawLauncher();
@@ -62,6 +73,8 @@ namespace mLauncher
             LocalTimer();
 
         }
+
+
 
 
 
@@ -146,6 +159,8 @@ namespace mLauncher
 
         private void SettingWindowsShow()
         {
+            SaveWindowSize();
+
             SettingWindow settingWindow = new SettingWindow();
             settingWindow.Owner = this;
             settingWindow.ShowDialog();
@@ -458,15 +473,15 @@ namespace mLauncher
         private void WindowShow()
         {
             // 현재 커서위치 알아오기
-
             POINT CursorPoint = new POINT();
-
             GetCursorPos(out CursorPoint);
 
             this.Left = CursorPoint.X;
             this.Top = CursorPoint.Y;
             if (this.WindowState == WindowState.Minimized)
                 this.WindowState = WindowState.Normal;
+            // 우선은 최상단에 보이게 한 후에 다시 설정값으로 변경
+            this.Topmost = true;
             this.Show();
             this.Topmost = IsTopMost;
         }
@@ -533,5 +548,28 @@ namespace mLauncher
             Visibility = Visibility.Collapsed;
 
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ResizeTimer.IsEnabled = true;
+            ResizeTimer.Stop();
+            ResizeTimer.Start();
+        }
+
+        private void Window_ResizeTimer_Tick(object sender, EventArgs e)
+        {
+            ResizeTimer.IsEnabled = false;
+            SaveWindowSize();
+        }
+
+        private void SaveWindowSize()
+        {
+            WindowWidth = Convert.ToInt32(this.Width);
+            DataBase.SetSetting("WIDTH", WindowWidth.ToString());
+            WindowHeight = Convert.ToInt32(this.Height);
+            DataBase.SetSetting("HEIGHT", WindowHeight.ToString());
+        }
+
+
     }
 }

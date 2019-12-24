@@ -35,6 +35,8 @@ namespace mLauncher
 
         private void InitData()
         {
+            WindowWidth = int.Parse(DataBase.GetSetting("WIDTH"));
+            WindowHeight = int.Parse(DataBase.GetSetting("HEIGHT"));
             ColumnCount = int.Parse(DataBase.GetSetting("COLS"));
             RowCount = int.Parse(DataBase.GetSetting("ROWS"));
             IsTopMost = bool.Parse(DataBase.GetSetting("TOPMOST"));
@@ -51,6 +53,21 @@ namespace mLauncher
             set { SetValue(TabsProperty, value); }
         }
         public static readonly DependencyProperty TabsProperty = DependencyProperty.Register("Tabs", typeof(DataTable), typeof(SettingWindow));
+
+        public int WindowWidth
+        {
+            get { return (int)GetValue(WindowWidthProperty); }
+            set { SetValue(WindowWidthProperty, value); }
+        }
+        public static readonly DependencyProperty WindowWidthProperty = DependencyProperty.Register("WindowWidth", typeof(int), typeof(SettingWindow));
+
+        public int WindowHeight
+        {
+            get { return (int)GetValue(WindowHeightProperty); }
+            set { SetValue(WindowHeightProperty, value); }
+        }
+        public static readonly DependencyProperty WindowHeightProperty = DependencyProperty.Register("WindowHeight", typeof(int), typeof(SettingWindow));
+
 
         public int ColumnCount
         {
@@ -85,6 +102,8 @@ namespace mLauncher
 
         public void SaveSettingsd(object sender, RoutedEventArgs e)
         {
+            DataBase.SetSetting("WIDTH", WindowWidth.ToString());
+            DataBase.SetSetting("HEIGHT", WindowHeight.ToString());
             DataBase.SetSetting("COLS", ColumnCount.ToString());
             DataBase.SetSetting("ROWS", RowCount.ToString());
             DataBase.SetSetting("TOPMOST", IsTopMost ? "TRUE" : "FALSE");
@@ -106,7 +125,6 @@ namespace mLauncher
              */
 
             var startup = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-            //var fileName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
             var projectName = Assembly.GetExecutingAssembly().GetName().Name;
 
             string file = Path.Combine(startup, string.Format("{0}.lnk", projectName));

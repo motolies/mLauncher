@@ -134,14 +134,15 @@ CREATE TABLE IF NOT EXISTS Setting (
 );
 
 INSERT OR IGNORE INTO Setting(Id, Value, DefaultValue, Description)
-VALUES('ROWS', '4', '4', 'ROW의 갯수')
+VALUES('WIDTH', '500', '500', '너비')
+, ('HEIGHT', '300', '300', '높이')
+, ('ROWS', '4', '4', 'ROW의 갯수')
 , ('COLS', '8', '8', 'COLUMN의 갯수')
 , ('STARTUP', 'TRUE', 'TRUE', '윈도우 시작시 실행')
 , ('TOPMOST', 'TRUE', 'TRUE', '항상위에 표시') ;
 
 INSERT OR IGNORE INTO Tab(Id, Name, Seq)
 VALUES( 'DEFAULT', '기본 프로그램', 1);
-
 
 
 
