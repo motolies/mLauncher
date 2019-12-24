@@ -363,8 +363,6 @@ namespace mLauncher
                 }));
             }
 
-
-
         }
 
 

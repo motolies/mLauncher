@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace mEX
 {
-    public static class ExtentionClass
+    public static class DependencyObjectEx
     {
         /// <summary>
         /// hitTest로 콘트롤을 찾을 수가 없어서 임시방편으로 쓰는 확장메소드

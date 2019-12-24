@@ -9,8 +9,6 @@
         Title="mLauncher" Height="300" Width="500" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Icon="icon.ico" SizeChanged="Window_SizeChanged" >
 
     <Grid>
-
         <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-
     </Grid>
 </Window>
