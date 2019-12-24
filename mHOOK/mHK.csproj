@@ -7,8 +7,8 @@
     <ProjectGuid>{39A44664-F1AB-4AB5-99F8-FA9736277FFA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>mHOOK</RootNamespace>
-    <AssemblyName>mHOOK</AssemblyName>
+    <RootNamespace>mHK</RootNamespace>
+    <AssemblyName>mHK</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

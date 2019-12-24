@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace mHOOK.Keyboad
+namespace mHK.Keyboad
 {
     /// <summary>
     /// Event Args for the event that is fired after the hot key has been pressed.

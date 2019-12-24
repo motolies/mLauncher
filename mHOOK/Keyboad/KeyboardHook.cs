@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
-namespace mHOOK.Keyboad
+namespace mHK.Keyboad
 {
     public sealed class KeyboardHook : IDisposable
     {

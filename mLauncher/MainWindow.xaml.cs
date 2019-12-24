@@ -1,5 +1,5 @@
 ﻿using mEx;
-using mHOOK.Keyboad;
+using mHK.Keyboad;
 using mLauncher.Base;
 using mLauncher.Control;
 using System;
@@ -451,7 +451,7 @@ namespace mLauncher
         {
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
-            hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
             // hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Form.Keys.Delete);
 
         }
@@ -459,7 +459,7 @@ namespace mLauncher
         private void Global_KeyPressed(object sender, KeyPressedEventArgs e)
         {
             Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
-            if (e.Modifier == (mHOOK.Keyboad.ModifierKeys.Control | mHOOK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.A)
+            if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.A)
             {
                 WindowShow();
             }
@@ -551,6 +551,7 @@ namespace mLauncher
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            // ResizeEnd 이벤트가 없어서 타이머 돌린다
             ResizeTimer.IsEnabled = true;
             ResizeTimer.Stop();
             ResizeTimer.Start();

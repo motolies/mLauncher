@@ -128,9 +128,9 @@
       <Project>{7255d0db-e47b-4e45-af76-cbcb6555711b}</Project>
       <Name>mEx</Name>
     </ProjectReference>
-    <ProjectReference Include="..\mHOOK\mHOOK.csproj">
+    <ProjectReference Include="..\mHOOK\mHK.csproj">
       <Project>{39a44664-f1ab-4ab5-99f8-fa9736277ffa}</Project>
-      <Name>mHOOK</Name>
+      <Name>mHK</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
