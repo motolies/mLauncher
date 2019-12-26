@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 
 namespace mUT
 {
     public class ThreadWorker
     {
+        
         Thread th;
         public event EventHandler DoWork;
         public event EventHandler OnCompleted;

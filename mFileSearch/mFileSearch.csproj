@@ -64,6 +64,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Base\FileGroupItem.cs" />
+    <Compile Include="Base\FileSearch.cs" />
+    <Compile Include="Base\InverseBooleanConverter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -96,6 +98,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\mEX\mEX.csproj">
+      <Project>{7255d0db-e47b-4e45-af76-cbcb6555711b}</Project>
+      <Name>mEX</Name>
+    </ProjectReference>
     <ProjectReference Include="..\mUT\mUT.csproj">
       <Project>{a96f9963-701b-4c97-a4d1-3d8bd5cc50b7}</Project>
       <Name>mUT</Name>

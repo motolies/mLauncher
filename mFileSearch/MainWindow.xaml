@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mFileSearch"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="600" MinWidth="600" MinHeight="500" >
+        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" >
+
+    <Window.Resources>
+        <local:InverseBooleanConverter x:Key="BooleanConverter"/>
+    </Window.Resources>
+    
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -25,16 +30,19 @@
 
         <TextBlock Text="검색어" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <ComboBox  Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
-        <Button Content="검  색" Click="Search_Click" Grid.Column="2" Grid.Row="0" Height="22"/>
+        <Button Content="검  색" Click="Search_Click" Grid.Column="2" Grid.Row="0" Height="22" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}"/>
         <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="확장자 필터" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <ComboBox  Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
-        <Button Content="취  소" Grid.Column="2" Grid.Row="1" Height="22" Click="Cancel_Click"/>
+        <Button Content="취  소" Grid.Column="2" Grid.Row="1" Height="22" Click="Cancel_Click" IsEnabled="{Binding IsBusy}"/>
         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="옵션" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
+        <StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <CheckBox Content="하위폴더 포함" IsChecked="{Binding IsSubFolder}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <CheckBox Content="정규식 사용" IsChecked="{Binding IsRegex}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" />
+        </StackPanel>
         <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="검색대상 폴더(Drag&amp;Drop)" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,0" />
@@ -55,13 +63,13 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn>
+                        <GridViewColumn Width="532">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Path"></TextBlock>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Path}" MinWidth="480"></TextBlock>
+                                    <TextBlock Text="{Binding Path}"></TextBlock>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -76,7 +84,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Line" Width="120" DisplayMemberBinding="{Binding Line}" />
-                    <GridViewColumn Header="Text" DisplayMemberBinding="{Binding Text}" />
+                    <GridViewColumn Header="Text" Width="532" DisplayMemberBinding="{Binding Text}" />
                 </GridView>
             </ListView.View>
             
@@ -112,7 +120,11 @@
         </ListView>
 
 
-        <StatusBar Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" />
+        <StatusBar Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" >
+            <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
+                <TextBlock Text="{Binding PercentProperty}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            </Grid>
+        </StatusBar>
 
     </Grid>
 </Window>

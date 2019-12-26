@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace mFileSearch
 {
@@ -23,7 +25,7 @@ namespace mFileSearch
     public partial class MainWindow : Window
     {
 
-        static ThreadWorker tw = new ThreadWorker();
+        public static ThreadWorker tw = new ThreadWorker();
 
         public MainWindow()
         {
@@ -60,12 +62,17 @@ namespace mFileSearch
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("File");
             view.GroupDescriptions.Clear();
             view.GroupDescriptions.Add(groupDescription);
+
+            this.IsSubFolder = true;
         }
 
         #region thread 관련 함수
         private void Tw_OnCompleted(object sender, EventArgs e)
         {
-            ControlState(false);
+            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+            {
+                this.IsBusy = false;
+            }));
         }
         private void Tw_DoWork(object sender, EventArgs e)
         {
@@ -73,9 +80,18 @@ namespace mFileSearch
         }
         private void Tw_OnProcessChanged(object sender, ProgressEventArgs e)
         {
-            //ChangePercentDele(e.Percent);
+            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+            {
+                ChangePercent(e.Percent);
+            }));
+            
         }
         #endregion
+
+        private void ChangePercent(float per)
+        {
+            Percent = (per * 100).ToString("#,###.00") + "%";
+        }
 
         #region 속성
         public ObservableCollection<TargetFolder> Folders
@@ -85,7 +101,6 @@ namespace mFileSearch
         }
         public static readonly DependencyProperty FoldersProperty = DependencyProperty.Register("Folders", typeof(ObservableCollection<TargetFolder>), typeof(MainWindow));
 
-
         public ObservableCollection<FileFound> FindingFiles
         {
             get { return (ObservableCollection<FileFound>)GetValue(FindingFilesProperty); }
@@ -93,40 +108,48 @@ namespace mFileSearch
         }
         public static readonly DependencyProperty FindingFilesProperty = DependencyProperty.Register("FindingFiles", typeof(ObservableCollection<FileFound>), typeof(MainWindow));
 
+        public bool IsSubFolder
+        {
+            get { return (bool)GetValue(IsSubFolderProperty); }
+            set { SetValue(IsSubFolderProperty, value); }
+        }
+        public static readonly DependencyProperty IsSubFolderProperty = DependencyProperty.Register("IsSubFolder", typeof(bool), typeof(MainWindow));
+
+        public bool IsRegex
+        {
+            get { return (bool)GetValue(IsRegexProperty); }
+            set { SetValue(IsRegexProperty, value); }
+        }
+        public static readonly DependencyProperty IsRegexProperty = DependencyProperty.Register("IsRegex", typeof(bool), typeof(MainWindow));
+
+        public bool IsBusy
+        {
+            get { return (bool)GetValue(IsBusyProperty); }
+            set { SetValue(IsBusyProperty, value); }
+        }
+        public static readonly DependencyProperty IsBusyProperty = DependencyProperty.Register("IsBusy", typeof(bool), typeof(MainWindow));
+
+        public string Percent
+        {
+            get { return (string)GetValue(PercentProperty); }
+            set { SetValue(PercentProperty, value); }
+        }
+        public static readonly DependencyProperty PercentProperty = DependencyProperty.Register("Percent", typeof(string), typeof(MainWindow));
+
         #endregion
 
 
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-            BeforeSearch();
+            this.IsBusy = true;
             tw.Run();
-        }
-
-        private void BeforeSearch()
-        {
-            //isStop = false;
-            //listView.Items.Clear();
-            //listView.Groups.Clear();
-            //MatchedCount = 0;
-            //txtTotalCount.Text = string.Format("총 {0}개 검색", MatchedCount);
-            //groupList.Clear();
-            //ControlState(true);
-
-            //if (!cbCondition.Items.Contains(cbCondition.Text))
-            //    cbCondition.Items.Add(cbCondition.Text);
-
-        }
-
-        private void ControlState(bool stat)
-        {
-            // 콘트롤 설정
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            //InitControl();
-            
+            tw.Stop();
+            this.IsBusy = false;
         }
     }
 
