@@ -1,5 +1,4 @@
-﻿using mEX;
-using mHK.Keyboad;
+﻿using mHK.Keyboad;
 using mLauncher.Base;
 using mLauncher.Control;
 using System;
@@ -18,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.Reflection;
+using mEX;
 
 namespace mLauncher
 {

@@ -11,9 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mHK", "mHK\mHK.csproj", "{3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mFileSearch", "mFileSearch\mFileSearch.csproj", "{20EB8626-33DD-47EF-94B2-D0DEB48F072C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mEX", "mEX\mEX.csproj", "{7255D0DB-E47B-4E45-AF76-CBCB6555711B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Module", "Module", "{E32C0583-A930-4669-948F-FB3A8A028713}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mEX", "mEX\mEX.csproj", "{7255D0DB-E47B-4E45-AF76-CBCB6555711B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
