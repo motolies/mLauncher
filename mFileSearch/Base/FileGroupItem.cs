@@ -12,12 +12,14 @@ namespace mFileSearch.Base
     {
         public override object GroupNameFromItem(object item, int level, CultureInfo culture)
         {
-            FileFound found = item as FileFound;
+            //FileFound found = item as FileFound;
 
-            if (string.IsNullOrWhiteSpace(found.File))
-                return "Unknown File Path";
-            else
-                return found.File;
+            //if (string.IsNullOrWhiteSpace(found.File))
+            //    return "Unknown File Path";
+            //else
+            //    return found.File;
+
+            return "Groupppp";
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,14 +21,12 @@ namespace mFileSearch
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        private List<FileFound> FindingFiles = new List<FileFound>();
-
         public MainWindow()
         {
             InitializeComponent();
-            Folders = new List<TargetFolder>();
-            //FindingFiles = new List<FileFound>();
+
+            Folders = new ObservableCollection<TargetFolder>();
+            FindingFiles = new ObservableCollection<FileFound>();
 
             this.DataContext = this;
             
@@ -40,6 +39,8 @@ namespace mFileSearch
             FindingFiles.Add(new FileFound() { File = "a", Line = 2, Text = "aa2" });
 
             InitControl();
+
+            
         }
 
         private void InitControl()
@@ -47,40 +48,44 @@ namespace mFileSearch
             // https://icodebroker.tistory.com/5133
             // https://www.wpf-tutorial.com/listview-control/listview-grouping/
 
-            ResultListView.ItemsSource = FindingFiles;
+            //ResultListView.ItemsSource = FindingFiles;
+            //CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ResultListView.ItemsSource);
 
-            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(ResultListView.ItemsSource);
+            CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(FindingFiles);
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("File");
+            view.GroupDescriptions.Clear();
             view.GroupDescriptions.Add(groupDescription);
 
-      
+
         }
 
-        public List<TargetFolder> Folders
+        public ObservableCollection<TargetFolder> Folders
         {
-            get { return (List<TargetFolder>)GetValue(FoldersProperty); }
+            get { return (ObservableCollection<TargetFolder>)GetValue(FoldersProperty); }
             set { SetValue(FoldersProperty, value); }
         }
-        public static readonly DependencyProperty FoldersProperty = DependencyProperty.Register("Folders", typeof(List<TargetFolder>), typeof(MainWindow));
+        public static readonly DependencyProperty FoldersProperty = DependencyProperty.Register("Folders", typeof(ObservableCollection<TargetFolder>), typeof(MainWindow));
 
 
-        //public List<FileFound> FindingFiles
-        //{
-        //    get { return (List<FileFound>)GetValue(FindingFilesProperty); }
-        //    set { SetValue(FindingFilesProperty, value); }
-        //}
-        //public static readonly DependencyProperty FindingFilesProperty = DependencyProperty.Register("FindingFiles", typeof(List<FileFound>), typeof(MainWindow));
+        public ObservableCollection<FileFound> FindingFiles
+        {
+            get { return (ObservableCollection<FileFound>)GetValue(FindingFilesProperty); }
+            set { SetValue(FindingFilesProperty, value); }
+        }
+        public static readonly DependencyProperty FindingFilesProperty = DependencyProperty.Register("FindingFiles", typeof(ObservableCollection<FileFound>), typeof(MainWindow));
 
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("검색");
             FindingFiles.Add(new FileFound() { File = "c", Line = 2, Text = "ccd" });
+            Folders.Add(new TargetFolder() { Path = "false1", Enable = false });
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            InitControl();
+            //InitControl();
+            
         }
     }
 

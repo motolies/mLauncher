@@ -74,18 +74,38 @@
         <ListView Name="ResultListView" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}"  >
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="File" Width="120" DisplayMemberBinding="{Binding File}" />
                     <GridViewColumn Header="Line" Width="120" DisplayMemberBinding="{Binding Line}" />
-                    <GridViewColumn Header="Text" Width="120" DisplayMemberBinding="{Binding Text}" />
+                    <GridViewColumn Header="Text" DisplayMemberBinding="{Binding Text}" />
                 </GridView>
             </ListView.View>
+            
             <ListView.GroupStyle>
                 <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="100*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="14" Foreground="Gray" FontWeight="Bold"  />
+                                                    <TextBlock Grid.Column="1" Text="{Binding ItemCount}" FontSize="14" Foreground="Green" FontWeight="Bold" FontStyle="Italic" Margin="10,0,0,0"  />
+                                                    <TextBlock Grid.Column="2" Text=" item(s)" FontSize="14" Foreground="Silver" FontStyle="Italic"  />
+                                                </Grid>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
                 </GroupStyle>
             </ListView.GroupStyle>
         </ListView>
