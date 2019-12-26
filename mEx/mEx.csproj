@@ -7,8 +7,8 @@
     <ProjectGuid>{7255D0DB-E47B-4E45-AF76-CBCB6555711B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>mEx</RootNamespace>
-    <AssemblyName>mEx</AssemblyName>
+    <RootNamespace>mEX</RootNamespace>
+    <AssemblyName>mEX</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

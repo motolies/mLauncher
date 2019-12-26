@@ -124,7 +124,7 @@
       <Project>{baa1c41a-8b56-4d7e-b727-e279e990baac}</Project>
       <Name>mDB</Name>
     </ProjectReference>
-    <ProjectReference Include="..\mEx\mEX.csproj">
+    <ProjectReference Include="..\mEX\mEX.csproj">
       <Project>{7255d0db-e47b-4e45-af76-cbcb6555711b}</Project>
       <Name>mEX</Name>
     </ProjectReference>
