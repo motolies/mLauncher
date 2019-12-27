@@ -29,12 +29,12 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="검색어" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <ComboBox  Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
+        <ComboBox Name="cboCondition" Text="Launcher" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
         <Button Content="검  색" Click="Search_Click" Grid.Column="2" Grid.Row="0" Height="22" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}"/>
         <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="확장자 필터" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <ComboBox  Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
+        <ComboBox Name="cboFilter" Text="*.*" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
         <Button Content="취  소" Grid.Column="2" Grid.Row="1" Height="22" Click="Cancel_Click" IsEnabled="{Binding IsBusy}"/>
         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
@@ -49,7 +49,7 @@
         <Button Content="추  가" Grid.Column="2" Grid.Row="3" Height="22"/>
         <!--<Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>-->
 
-        <ListView  Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding Folders}"   >
+        <ListView Name="lvFolder" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding Folders}" AllowDrop="True" DragEnter="lvFolder_DragEnter" Drop="lvFolder_Drop"    >
             <ListView.View>
                 <GridView>
                     <GridView.Columns>
@@ -83,7 +83,7 @@
         <ListView Name="ResultListView" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}"  >
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Line" Width="120" DisplayMemberBinding="{Binding Line}" />
+                    <GridViewColumn Header="Line" Width="60" DisplayMemberBinding="{Binding Line}" />
                     <GridViewColumn Header="Text" Width="532" DisplayMemberBinding="{Binding Text}" />
                 </GridView>
             </ListView.View>
@@ -122,7 +122,8 @@
 
         <StatusBar Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" >
             <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
-                <TextBlock Text="{Binding PercentProperty}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                <TextBlock Text="{Binding Percent}" VerticalAlignment="Center"  />
+                <TextBlock Text="{Binding MatchedCount, StringFormat=총 {0:#,###}개 검색}" VerticalAlignment="Center" HorizontalAlignment="Right" />
             </Grid>
         </StatusBar>
 
