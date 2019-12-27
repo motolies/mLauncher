@@ -10,7 +10,7 @@
     <Window.Resources>
         <local:InverseBooleanConverter x:Key="BooleanConverter"/>
     </Window.Resources>
-    
+
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
@@ -85,13 +85,69 @@
         <GridSplitter Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3"/>
 
         <ListView Name="lvResult" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}" ContextMenuOpening="lvResult_ContextMenuOpening" MouseDoubleClick="LvResult_MouseDoubleClick"  >
-            <ListView.View>
+            <!--원래는 이거였는데...-->
+            <!--<ListView.View>
                 <GridView>
                     <GridViewColumn Header="Line" Width="60" DisplayMemberBinding="{Binding Line}" />
                     <GridViewColumn Header="Text" Width="450" DisplayMemberBinding="{Binding Text}" />
                 </GridView>
-            </ListView.View>
+            </ListView.View>-->
             
+            <!--이걸로 바꾸는 중-->
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding Line}" />
+                        <TextBlock Text="{Binding Text}" />
+                    </WrapPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+            <ListView.Template>
+                <ControlTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition  Width="60" />
+                                    <ColumnDefinition  Width="1*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="5,0" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="1" />
+                                        <Setter Property="BorderBrush" Value="LightGray" />
+                                        <Setter Property="Background" Value="MidnightBlue" />
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Border Grid.Column="0">
+                                    <TextBlock >Line</TextBlock>
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <TextBlock >Text</TextBlock>
+                                </Border>
+
+                            </Grid>
+                            <ItemsPresenter Grid.Row="1"></ItemsPresenter>
+
+
+                        </Grid>
+                    </ScrollViewer>
+
+                </ControlTemplate>
+            </ListView.Template>
+
             <ListView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.ContainerStyle>
