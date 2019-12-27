@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mFileSearch"
         mc:Ignorable="d"
-        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" >
+        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" Closing="Window_Closing" >
 
     <Window.Resources>
         <local:InverseBooleanConverter x:Key="BooleanConverter"/>
@@ -29,27 +29,31 @@
         </Grid.RowDefinitions>
 
         <TextBlock Text="검색어" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <ComboBox Name="cboCondition" Text="Launcher" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
+        <ComboBox Name="cboCondition" ItemsSource="{Binding Conditions}" SelectedItem="{Binding SimpleStringProperty, Mode=TwoWay}" Grid.Column="1" Grid.Row="0" 
+                  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
         <Button Content="검  색" Click="Search_Click" Grid.Column="2" Grid.Row="0" Height="22" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}"/>
         <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="확장자 필터" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <ComboBox Name="cboFilter" Text="*.*" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
+        <ComboBox Name="cboFilter" ItemsSource="{Binding Filters}" SelectedItem="{Binding SimpleStringProperty, Mode=TwoWay}" Text="*.*" Grid.Column="1" Grid.Row="1" 
+                  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
         <Button Content="취  소" Grid.Column="2" Grid.Row="1" Height="22" Click="Cancel_Click" IsEnabled="{Binding IsBusy}"/>
         <Border Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="옵션" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <CheckBox Content="하위폴더 포함" IsChecked="{Binding IsSubFolder}" VerticalAlignment="Center" HorizontalAlignment="Left" />
-            <CheckBox Content="정규식 사용" IsChecked="{Binding IsRegex}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" />
+        <StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="1" Orientation="Horizontal">
+            <CheckBox Content="하위폴더 포함" IsChecked="{Binding IsSubFolder}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <CheckBox Content="정규식 사용" IsChecked="{Binding IsRegex}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" />
         </StackPanel>
+        <Button Content="설  정" Click="Setting_Click" Grid.Column="2" Grid.Row="2" Height="22" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}"/>
         <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 
         <TextBlock Text="검색대상 폴더(Drag&amp;Drop)" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="18,0,0,0" />
-        <Button Content="추  가" Grid.Column="2" Grid.Row="3" Height="22"/>
+        <Button Content="추  가" Grid.Column="2" Grid.Row="3" Height="22" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}"/>
         <!--<Border Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>-->
 
-        <ListView Name="lvFolder" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding Folders}" AllowDrop="True" DragEnter="lvFolder_DragEnter" Drop="lvFolder_Drop"    >
+        <ListView Name="lvFolder" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding Folders}" 
+                  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" AllowDrop="True" DragEnter="lvFolder_DragEnter" Drop="lvFolder_Drop" KeyDown="LvFolder_KeyDown"   >
             <ListView.View>
                 <GridView>
                     <GridView.Columns>

@@ -54,14 +54,14 @@
                         <Button Content="+" Width="20" HorizontalAlignment="Center" Click="AddRow" VerticalAlignment="Center"></Button>
                         <Button Content="-" Width="20" HorizontalAlignment="Center" Click="DeleteRow" VerticalAlignment="Center"></Button>
                     </StackPanel>
-                    <DataGrid Name="gridView" Grid.Row="1" ItemsSource="{Binding Tabs}" CanUserAddRows="False" SelectionMode="Single"/>
+                    <DataGrid Name="gridView" Grid.Row="1" ItemsSource="{Binding Tabs}" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single"/>
                 </Grid>
                 
             </TabItem>
         </TabControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="4" >
-            <Button Content="Save" Width="50" HorizontalAlignment="Right" Click="SaveSettingsd"></Button>
+            <Button Content="Save" Width="50" HorizontalAlignment="Right" Click="SaveSettings"></Button>
             <Button Content="Cancel" Width="50" HorizontalAlignment="Right" Click="CancelWindows"></Button>
         </StackPanel>
 

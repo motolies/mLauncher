@@ -1,8 +1,10 @@
 ﻿using mEx;
+using mFileSearch.Base;
 using mUT;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -32,20 +34,44 @@ namespace mFileSearch
         object syncLineNumber = new object();
         public static ThreadWorker tw = new ThreadWorker();
         private bool ThreadStop = false;
+        private List<string> ExtentionWithout = new List<string>();
+
 
         public MainWindow()
         {
             InitializeComponent();
-
-            Folders = new ObservableCollection<TargetFolder>();
-            FindingFiles = new ObservableCollection<FileFound>();
+            DataBase.InitDB();
+            //FindingFiles = new ObservableCollection<FileFound>();
 
             this.DataContext = this;
 
-            Folders.Add(new TargetFolder() { Path = @"D:\Git\mLauncher", Enable = true });
+            //Folders.Add(new TargetFolder() { Path = @"D:\Git\mLauncher", Enable = true });
 
             InitWorker();
             InitControl();
+            InitData();
+        }
+
+        #region init
+        public void InitData()
+        {
+            IList<string> conditions = DataBase.GetConditions().AsEnumerable().Select(r => r.Field<string>("Id")).ToList();
+            Conditions = new ObservableCollection<string>(conditions);
+
+            IList<string> filters = DataBase.GetFilters().AsEnumerable().Select(r => r.Field<string>("Id")).ToList();
+            Filters = new ObservableCollection<string>(filters);
+
+            IList<TargetFolder> folders = DataBase.GetFolders().AsEnumerable().Select(r =>
+                new TargetFolder()
+                {
+                    Path = r.Field<string>("Path"),
+                    Enable = r.Field<Int64>("IsEnable") == 1 ? true : false
+                }
+            ).ToList();
+            Folders = new ObservableCollection<TargetFolder>(folders);
+
+            ExtentionWithout = DataBase.GetExtentionWithout().AsEnumerable().Select(r => r.Field<string>("Id")).ToList();
+
         }
 
         private void InitWorker()
@@ -68,6 +94,8 @@ namespace mFileSearch
             this.IsSubFolder = true;
         }
 
+        #endregion
+
         #region thread 관련 함수
         private void Tw_OnCompleted(object sender, EventArgs e)
         {
@@ -89,6 +117,13 @@ namespace mFileSearch
                 _fil = cboFilter.Text;
                 _sub = IsSubFolder;
                 _reg = IsRegex;
+
+                DataBase.SetCondition(_con);
+                DataBase.SetFilter(_fil);
+                IList<string> conditions = DataBase.GetConditions().AsEnumerable().Select(r => r.Field<string>("Id")).ToList();
+                Conditions = new ObservableCollection<string>(conditions);
+                IList<string> filters = DataBase.GetFilters().AsEnumerable().Select(r => r.Field<string>("Id")).ToList();
+                Filters = new ObservableCollection<string>(filters);
             }));
 
             SearchFile(_fol, _con, _fil, _sub, _reg);
@@ -100,7 +135,7 @@ namespace mFileSearch
             {
                 ChangePercent(e.Percent);
             }));
-            
+
         }
         #endregion
 
@@ -110,6 +145,22 @@ namespace mFileSearch
         }
 
         #region 속성
+
+        public ObservableCollection<string> Conditions
+        {
+            get { return (ObservableCollection<string>)GetValue(ConditionsProperty); }
+            set { SetValue(ConditionsProperty, value); }
+        }
+        public static readonly DependencyProperty ConditionsProperty = DependencyProperty.Register("Conditions", typeof(ObservableCollection<string>), typeof(MainWindow), new PropertyMetadata(new ObservableCollection<string>()));
+
+        public ObservableCollection<string> Filters
+        {
+            get { return (ObservableCollection<string>)GetValue(FiltersProperty); }
+            set { SetValue(FiltersProperty, value); }
+        }
+        public static readonly DependencyProperty FiltersProperty = DependencyProperty.Register("Filters", typeof(ObservableCollection<string>), typeof(MainWindow), new PropertyMetadata(new ObservableCollection<string>()));
+
+
         public ObservableCollection<TargetFolder> Folders
         {
             get { return (ObservableCollection<TargetFolder>)GetValue(FoldersProperty); }
@@ -122,7 +173,7 @@ namespace mFileSearch
             get { return (ObservableCollection<FileFound>)GetValue(FindingFilesProperty); }
             set { SetValue(FindingFilesProperty, value); }
         }
-        public static readonly DependencyProperty FindingFilesProperty = DependencyProperty.Register("FindingFiles", typeof(ObservableCollection<FileFound>), typeof(MainWindow));
+        public static readonly DependencyProperty FindingFilesProperty = DependencyProperty.Register("FindingFiles", typeof(ObservableCollection<FileFound>), typeof(MainWindow), new PropertyMetadata(new ObservableCollection<FileFound>()));
 
         public bool IsSubFolder
         {
@@ -159,10 +210,8 @@ namespace mFileSearch
         }
         public static readonly DependencyProperty MatchedCountProperty = DependencyProperty.Register("MatchedCount", typeof(int), typeof(MainWindow));
 
-    
+
         #endregion
-
-
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
@@ -175,7 +224,7 @@ namespace mFileSearch
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            
+
             ThreadStop = true;
             tw.Stop();
             this.IsBusy = false;
@@ -199,7 +248,7 @@ namespace mFileSearch
                 files.AddRange(Directory.GetFiles(folder, "*.*", so));
             }
 
-            var withoutFiles = files.Where(ext => !ext.EndWith(new List<String>() { ".dll", ".exe", ".db", ".svn-base", ".pdb", ".cache" }));
+            var withoutFiles = files.Where(ext => !ext.EndWith(ExtentionWithout));
             var fileList = withoutFiles.Where(ext => ext.ToLower().EndWith(filter));
 
             int totalFile = fileList.Count();
@@ -234,7 +283,7 @@ namespace mFileSearch
                             {
                                 FindingFiles.Add(new FileFound() { File = file, Line = lineNumber, Text = lineString });
                             }));
-                            
+
                         }
                     }
                     lineNumber++;
@@ -274,14 +323,44 @@ namespace mFileSearch
                         value = System.IO.Path.GetDirectoryName(str);
 
                     if (Folders.Where(f => f.Path == value).Count() < 1)
-                        Folders.Add(new TargetFolder() { Path = value, Enable = true });
+                    {
+                        TargetFolder folder = new TargetFolder() { Path = value, Enable = true };
+                        Folders.Add(folder);
+                        DataBase.SetFolder(folder);
+                    }
                 }
             }
-
         }
 
         #endregion
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            foreach (TargetFolder folder in Folders)
+            {
+                DataBase.SetFolderEnable(folder);
+            }
+        }
+
+        private void LvFolder_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete || e.Key == Key.Back)
+            {
+                this.lvFolder.SelectedItems.OfType<TargetFolder>().ToList().ForEach(folder =>
+                {
+                    Folders.Remove(folder);
+                    DataBase.DeleteFolder(folder);
+                });
+            }
+        }
+
+        private void Setting_Click(object sender, RoutedEventArgs e)
+        {
+            SettingWindow setting = new SettingWindow();
+            setting.Owner = this;
+            setting.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            setting.ShowDialog();
+        }
     }
 
     public class TargetFolder

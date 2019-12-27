@@ -100,7 +100,7 @@ namespace mLauncher
 
 
 
-        public void SaveSettingsd(object sender, RoutedEventArgs e)
+        public void SaveSettings(object sender, RoutedEventArgs e)
         {
             DataBase.SetSetting("WIDTH", WindowWidth.ToString());
             DataBase.SetSetting("HEIGHT", WindowHeight.ToString());
