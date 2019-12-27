@@ -1,5 +1,6 @@
 ﻿using mEx;
 using mFileSearch.Base;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using mUT;
 using System;
 using System.Collections.Generic;
@@ -16,12 +17,17 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using DataFormats = System.Windows.DataFormats;
+using DragEventArgs = System.Windows.DragEventArgs;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MessageBox = System.Windows.MessageBox;
 
 namespace mFileSearch
 {
@@ -99,7 +105,7 @@ namespace mFileSearch
         #region thread 관련 함수
         private void Tw_OnCompleted(object sender, EventArgs e)
         {
-            Dispatcher.Invoke(DispatcherPriority.Send, new Action(delegate
+            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             {
                 this.IsBusy = false;
             }));
@@ -131,7 +137,7 @@ namespace mFileSearch
         }
         private void Tw_OnProcessChanged(object sender, ProgressEventArgs e)
         {
-            Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
+            Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             {
                 ChangePercent(e.Percent);
             }));
@@ -208,13 +214,19 @@ namespace mFileSearch
             get { return (int)GetValue(MatchedCountProperty); }
             set { SetValue(MatchedCountProperty, value); }
         }
-        public static readonly DependencyProperty MatchedCountProperty = DependencyProperty.Register("MatchedCount", typeof(int), typeof(MainWindow));
+        public static readonly DependencyProperty MatchedCountProperty = DependencyProperty.Register("MatchedCount", typeof(int), typeof(MainWindow), new PropertyMetadata(0));
 
 
         #endregion
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(cboCondition.Text) || string.IsNullOrWhiteSpace(cboFilter.Text))
+            {
+                MessageBox.Show(this, "검색어와 필터는 모두 있어야 합니다.");
+                return;
+            }
+
             FindingFiles.Clear();
             MatchedCount = 0;
             this.IsBusy = true;
@@ -278,12 +290,11 @@ namespace mFileSearch
 
                         lock (syncLineNumber)
                         {
-                            //검색 중간중간에 리스트에 뿌린다
                             Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
                             {
+                                //검색 중간중간에 리스트에 뿌린다
                                 FindingFiles.Add(new FileFound() { File = file, Line = lineNumber, Text = lineString });
                             }));
-
                         }
                     }
                     lineNumber++;
@@ -360,6 +371,22 @@ namespace mFileSearch
             setting.Owner = this;
             setting.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             setting.ShowDialog();
+        }
+
+        private void FolderAdd_Click(object sender, RoutedEventArgs e)
+        {
+            // https://phantom00.tistory.com/101
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                Folders.Add(new TargetFolder()
+                {
+                    Path = dialog.FileName,
+                    Enable = true
+                });
+            }
         }
     }
 
