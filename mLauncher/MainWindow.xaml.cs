@@ -144,7 +144,7 @@ namespace mLauncher
                     DeleteButton(placementTarget);
                     break;
                 case "Explorer":
-                    Process.Start("explorer.exe", Path.GetDirectoryName(placementTarget.Path));
+                    Process.Start("explorer.exe", string.Format(@"/select,""{0}""", placementTarget.Path));
                     break;
                 case "Settings":
                     SettingWindowsShow();
@@ -450,7 +450,7 @@ namespace mLauncher
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
-            // hook.RegisterHotKey(mHOOK.Keyboad.ModifierKeys.None, Form.Keys.Delete);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Q);
 
         }
 
@@ -460,6 +460,10 @@ namespace mLauncher
             if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.A)
             {
                 WindowShow();
+            }
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Q)
+            {
+                Process.Start("mFileSearch.exe");
             }
 
         }

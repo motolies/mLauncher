@@ -107,6 +107,8 @@ namespace mDB.SQLite
                         dt.Load(rdr);
                         if (dt.Rows.Count == 1)
                             return (T)dt.Rows[0][0];
+                        else if (dt.Rows.Count < 1)
+                            return default(T);
                         else
                             throw new Exception("리턴받은 로우의 갯수가 하나가 아닙니다. Where 조건을 확인해주세요.");
                     }

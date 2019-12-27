@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mFileSearch"
         mc:Ignorable="d"
-        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" Closing="Window_Closing" >
+        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" Closing="Window_Closing" Icon="Resources/searchicon.ico" >
 
     <Window.Resources>
         <local:InverseBooleanConverter x:Key="BooleanConverter"/>
@@ -67,7 +67,7 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="532">
+                        <GridViewColumn Width="500">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Path"></TextBlock>
                             </GridViewColumn.Header>
@@ -84,11 +84,11 @@
 
         <GridSplitter Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3"/>
 
-        <ListView Name="ResultListView" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}"  >
+        <ListView Name="lvResult" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}" ContextMenuOpening="lvResult_ContextMenuOpening" MouseDoubleClick="LvResult_MouseDoubleClick"  >
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Line" Width="60" DisplayMemberBinding="{Binding Line}" />
-                    <GridViewColumn Header="Text" Width="532" DisplayMemberBinding="{Binding Text}" />
+                    <GridViewColumn Header="Text" Width="450" DisplayMemberBinding="{Binding Text}" />
                 </GridView>
             </ListView.View>
             

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mFileSearch"
         mc:Ignorable="d"
-        Title="SettingWindow" Height="300" Width="400" Closing="Window_Closing">
+        Title="SettingWindow" Height="300" Width="400" Closing="Window_Closing" Icon="Resources/searchicon.ico">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1 *" />

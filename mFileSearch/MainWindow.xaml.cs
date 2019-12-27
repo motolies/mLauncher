@@ -17,17 +17,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using DataFormats = System.Windows.DataFormats;
-using DragEventArgs = System.Windows.DragEventArgs;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MessageBox = System.Windows.MessageBox;
 
 namespace mFileSearch
 {
@@ -41,7 +36,7 @@ namespace mFileSearch
         public static ThreadWorker tw = new ThreadWorker();
         private bool ThreadStop = false;
         private List<string> ExtentionWithout = new List<string>();
-
+        private System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
 
         public MainWindow()
         {
@@ -56,9 +51,12 @@ namespace mFileSearch
             InitWorker();
             InitControl();
             InitData();
+            SetContextMenu();
         }
 
         #region init
+
+
         public void InitData()
         {
             IList<string> conditions = DataBase.GetConditions().AsEnumerable().Select(r => r.Field<string>("Id")).ToList();
@@ -98,7 +96,82 @@ namespace mFileSearch
             view.GroupDescriptions.Add(groupDescription);
 
             this.IsSubFolder = true;
+
+            this.lvResult.ContextMenu = contextMenu;
         }
+
+        #endregion
+
+
+        #region context menu
+
+
+        private void SetContextMenu()
+        {
+            contextMenu.AddHandler(System.Windows.Controls.MenuItem.ClickEvent, new RoutedEventHandler(MenuItem_Click));
+
+            var MenuItems = new Dictionary<string, string>()
+            {
+                { "Open", "열기" },
+                { "NotepadPlus", "Notepad++로 열기" },
+                { "Explorer", "탐색기" },
+            };
+
+            foreach (var item in MenuItems)
+            {
+                var menu = new MenuItem();
+                menu.Name = item.Key;
+                menu.Header = item.Value;
+                contextMenu.Items.Add(menu);
+            }
+        }
+
+        private void lvResult_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            contextMenu.Items.OfType<MenuItem>().ToList().ForEach(i => i.IsEnabled = lvResult.SelectedItems.Count < 1 ? false : true);
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var fileFound = lvResult.SelectedItem as FileFound;
+            var menuItem = e.Source as System.Windows.Controls.MenuItem;
+
+            switch (menuItem.Name)
+            {
+                case "Open":
+                    OpenFile(fileFound.File);
+                    break;
+                case "NotepadPlus":
+                    string notepad = DataBase.GetProgram(Program.NotepadPlus);
+                    if (string.IsNullOrWhiteSpace(notepad) || !File.Exists(notepad))
+                    {
+                        MessageBox.Show("Notepad++ 실행파일을 선택해주세요.");
+
+                        CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+                        dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                        dialog.Filters.Add(new CommonFileDialogFilter("EXE", "*.exe"));
+                        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                        {
+                            // notepad ++ 경로저장 후 실행
+                            DataBase.SetProgram(Program.NotepadPlus, dialog.FileName);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Notepad++ 실행파일을 선택해야 사용하실 수 있습니다.");
+                            return;
+                        }
+                    }
+                    Process.Start(DataBase.GetProgram(Program.NotepadPlus), string.Format("\"{0}\" -n{1}", fileFound.File, fileFound.Line));
+                    break;
+                case "Explorer":
+                    Process.Start("explorer.exe", string.Format(@"/select,""{0}""", fileFound.File));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
 
         #endregion
 
@@ -377,7 +450,6 @@ namespace mFileSearch
         {
             // https://phantom00.tistory.com/101
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            //dialog.InitialDirectory = "C:\\Users";
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
@@ -388,6 +460,36 @@ namespace mFileSearch
                 });
             }
         }
+
+        private void LvResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = lvResult.SelectedItem as FileFound;
+            if (item != null)
+            {
+                try
+                {
+                    OpenFile(item.File);
+                }
+                catch (System.ComponentModel.Win32Exception we)
+                {
+                    MessageBox.Show(this, "연결된 기본 프로그램이 없습니다.");
+                }
+            }
+        }
+
+        private void OpenFile(string path)
+        {
+            try
+            {
+                Process.Start(path);
+            }
+            catch (System.ComponentModel.Win32Exception we)
+            {
+                MessageBox.Show(this, "연결된 기본 프로그램이 없습니다.");
+            }
+        }
+
+
     }
 
     public class TargetFolder
@@ -403,6 +505,10 @@ namespace mFileSearch
         public string Text { get; set; }
     }
 
+    public enum Program
+    {
+        NotepadPlus
+    }
 
 
 }

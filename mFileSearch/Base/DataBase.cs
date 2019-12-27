@@ -38,6 +38,8 @@ namespace mFileSearch.Base
             conn.Execute(sql);
         }
 
+
+
         internal static DataTable GetFolders()
         {
             return conn.ExecuteReader("SELECT * FROM Folder ORDER BY CreateDate;");
@@ -45,7 +47,7 @@ namespace mFileSearch.Base
 
         internal static DataTable GetConditions()
         {
-            return conn.ExecuteReader("SELECT * FROM Condition ORDER BY CreateDate;");
+            return conn.ExecuteReader("SELECT * FROM Condition ORDER BY CreateDate DESC;");
         }
 
         internal static DataTable GetFilters()
@@ -114,6 +116,18 @@ namespace mFileSearch.Base
             }
         }
 
+
+        internal static void SetProgram(Program id, string path)
+        {
+            conn.Execute(string.Format("INSERT OR IGNORE INTO Program(Id, Path, CreateDate) VALUES('{0}', '{1}', DATETIME('NOW', 'LOCALTIME'));", id.ToString(), path));
+        }
+
+        internal static string GetProgram(Program id)
+        {
+            return conn.ExecuteValue<string>(string.Format("SELECT Path FROM Program WHERE Id = '{0}';", id.ToString()));
+        }
+
+
         internal static void InitDB()
         {
 
@@ -155,6 +169,13 @@ CREATE TABLE IF NOT EXISTS ExtentionWithout
     Id    TEXT NOT NULL PRIMARY KEY,
     IsBuiltIn    INTEGER NOT NULL,
 	CreateDate   TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Program 
+(
+    Id    TEXT NOT NULL PRIMARY KEY,
+    Path   TEXT NOT NULL,
+    CreateDate   TEXT NOT NULL
 );
 
 INSERT OR IGNORE INTO Filters(Id, IsBuiltIn, CreateDate)
