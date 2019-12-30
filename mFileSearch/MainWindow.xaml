@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mFileSearch"
+        xmlns:base="clr-namespace:mFileSearch.Base"
         mc:Ignorable="d"
         Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" Closing="Window_Closing" Icon="Resources/searchicon.ico" >
 
@@ -104,14 +105,15 @@
                         </GridViewColumn>
                         <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}
                                             , Converter={StaticResource WidthConverter}, ConverterParameter=100}">
-                            <!--<GridViewColumn>-->
                             <GridViewColumn.Header>
                                 <TextBlock Text="Text"/>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Text}"
-                                               />
+                                    <!--<TextBlock Text="{Binding Text}" TextTrimming="WordEllipsis" />-->
+                                    <base:HighlightTextBlock  Text="{Binding Text}" TextTrimming="WordEllipsis"
+                                         Selection="{Binding SearchText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HighlightColor="LightGreen" Forecolor="Red" />
+
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

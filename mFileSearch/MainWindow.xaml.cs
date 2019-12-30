@@ -38,6 +38,7 @@ namespace mFileSearch
         private List<string> ExtentionWithout = new List<string>();
         private System.Windows.Controls.ContextMenu contextMenu = new System.Windows.Controls.ContextMenu();
 
+
         public MainWindow()
         {
             InitializeComponent();
@@ -193,7 +194,7 @@ namespace mFileSearch
             Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
             {
                 _fol = Folders;
-                _con = cboCondition.Text;
+                _con = SearchText = cboCondition.Text;
                 _fil = cboFilter.Text;
                 _sub = IsSubFolder;
                 _reg = IsRegex;
@@ -290,6 +291,12 @@ namespace mFileSearch
         }
         public static readonly DependencyProperty MatchedCountProperty = DependencyProperty.Register("MatchedCount", typeof(int), typeof(MainWindow), new PropertyMetadata(0));
 
+        public string SearchText
+        {
+            get { return (string)GetValue(SearchTextProperty); }
+            set { SetValue(SearchTextProperty, value); }
+        }
+        public static readonly DependencyProperty SearchTextProperty = DependencyProperty.Register("SearchText", typeof(string), typeof(MainWindow));
 
         #endregion
 
