@@ -95,6 +95,7 @@ namespace mFileSearch
             view.GroupDescriptions.Clear();
             view.GroupDescriptions.Add(groupDescription);
 
+
             this.IsSubFolder = true;
 
             this.lvResult.ContextMenu = contextMenu;

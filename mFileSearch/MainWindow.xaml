@@ -9,6 +9,7 @@
 
     <Window.Resources>
         <local:InverseBooleanConverter x:Key="BooleanConverter"/>
+        <local:ControlWidthConverter x:Key="WidthConverter"/>
     </Window.Resources>
 
     <Grid Margin="5">
@@ -84,69 +85,42 @@
 
         <GridSplitter Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3"/>
 
-        <ListView Name="lvResult" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}" ContextMenuOpening="lvResult_ContextMenuOpening" MouseDoubleClick="LvResult_MouseDoubleClick"  >
-            <!--원래는 이거였는데...-->
-            <!--<ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Line" Width="60" DisplayMemberBinding="{Binding Line}" />
-                    <GridViewColumn Header="Text" Width="450" DisplayMemberBinding="{Binding Text}" />
+        <ListView Name="lvResult" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}"
+		  HorizontalContentAlignment="Stretch"
+                  ContextMenuOpening="lvResult_ContextMenuOpening" MouseDoubleClick="LvResult_MouseDoubleClick"  >
+
+            <ListView.View>
+                <GridView >
+                    <GridView.Columns>
+                        <GridViewColumn>
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Line"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate >
+                                    <TextBlock Text="{Binding Line}" MinWidth="50" HorizontalAlignment="Stretch" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}
+                                            , Converter={StaticResource WidthConverter}, ConverterParameter=100}">
+                            <!--<GridViewColumn>-->
+                            <GridViewColumn.Header>
+                                <TextBlock Text="Text"/>
+                            </GridViewColumn.Header>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Text}"
+                                               />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView.Columns>
                 </GridView>
-            </ListView.View>-->
-            
-            <!--이걸로 바꾸는 중-->
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <WrapPanel>
-                        <TextBlock Text="{Binding Line}" />
-                        <TextBlock Text="{Binding Text}" />
-                    </WrapPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-
-            <ListView.Template>
-                <ControlTemplate>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition  Width="60" />
-                                    <ColumnDefinition  Width="1*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="White" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="1" />
-                                        <Setter Property="BorderBrush" Value="LightGray" />
-                                        <Setter Property="Background" Value="MidnightBlue" />
-                                    </Style>
-                                </Grid.Resources>
-
-                                <Border Grid.Column="0">
-                                    <TextBlock >Line</TextBlock>
-                                </Border>
-                                <Border Grid.Column="1">
-                                    <TextBlock >Text</TextBlock>
-                                </Border>
-
-                            </Grid>
-                            <ItemsPresenter Grid.Row="1"></ItemsPresenter>
+            </ListView.View>
 
 
-                        </Grid>
-                    </ScrollViewer>
 
-                </ControlTemplate>
-            </ListView.Template>
 
             <ListView.GroupStyle>
                 <GroupStyle>
@@ -157,14 +131,15 @@
                                     <ControlTemplate>
                                         <Expander IsExpanded="True">
                                             <Expander.Header>
-                                                <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
+                                                <Grid  Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}
+                                            , Converter={StaticResource WidthConverter}, ConverterParameter=60}">
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="100*"/>
                                                         <ColumnDefinition Width="1*"/>
-                                                        <ColumnDefinition Width="1*"/>
+                                                        <ColumnDefinition Width="70"/>
+                                                        <ColumnDefinition Width="50"/>
                                                     </Grid.ColumnDefinitions>
                                                     <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="14" Foreground="#783030" FontWeight="Bold"  />
-                                                    <TextBlock Grid.Column="1" Text="{Binding ItemCount, StringFormat='&#160;{0:#,0}'}" FontSize="14" Foreground="Green" FontWeight="Bold" Margin="10,0,0,0"  />
+                                                    <TextBlock Grid.Column="1" Text="{Binding ItemCount, StringFormat='&#160;{0:#,0}'}" TextAlignment="Right" FontSize="14" Foreground="Green" FontWeight="Bold" Margin="10,0,0,0"  />
                                                     <TextBlock Grid.Column="2" Text=" item(s)" FontSize="14" Foreground="Silver" />
                                                 </Grid>
                                             </Expander.Header>
