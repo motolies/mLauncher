@@ -364,14 +364,14 @@ namespace mFileSearch
 
                     if ((isRegex && Regex.IsMatch(lineString, searchTerm, RegexOptions.IgnoreCase)) || lineString.ToLower().Contains(searchTerm))
                     {
-                        Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
+                        Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                         {
                             MatchedCount++;
                         }));
 
                         lock (syncLineNumber)
                         {
-                            Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate
+                            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                             {
                                 //검색 중간중간에 리스트에 뿌린다
                                 FindingFiles.Add(new FileFound() { File = file, Line = lineNumber, Text = lineString });
@@ -469,19 +469,15 @@ namespace mFileSearch
             }
         }
 
-        private void LvResult_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void LvResult_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = lvResult.SelectedItem as FileFound;
-            if (item != null)
+            // 앞으로는 이런식으로? 써봐야 겠다
+            // https://stackoverflow.com/questions/21967246/listview-getting-an-actual-item-object-from-listviewitem
+
+            if (sender is ListViewItem item && item.IsSelected)
             {
-                try
-                {
-                    OpenFile(item.File);
-                }
-                catch (System.ComponentModel.Win32Exception we)
-                {
-                    MessageBox.Show(this, "연결된 기본 프로그램이 없습니다.");
-                }
+                var actualItem = (FileFound)item.Content;
+                OpenFile(actualItem.File);
             }
         }
 

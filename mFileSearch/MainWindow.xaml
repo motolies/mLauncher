@@ -88,7 +88,7 @@
 
         <ListView Name="lvResult" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}"
 		  HorizontalContentAlignment="Stretch"
-                  ContextMenuOpening="lvResult_ContextMenuOpening" MouseDoubleClick="LvResult_MouseDoubleClick"  >
+                  ContextMenuOpening="lvResult_ContextMenuOpening"   >
 
             <ListView.View>
                 <GridView >
@@ -110,7 +110,6 @@
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <!--<TextBlock Text="{Binding Text}" TextTrimming="WordEllipsis" />-->
                                     <base:HighlightTextBlock  Text="{Binding Text}" TextTrimming="WordEllipsis"
                                          Selection="{Binding SearchText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HighlightColor="LightGreen" Forecolor="Red" />
 
@@ -121,7 +120,11 @@
                 </GridView>
             </ListView.View>
 
-
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <EventSetter Event="PreviewMouseDoubleClick" Handler="LvResult_PreviewMouseDoubleClick" />
+                </Style>
+            </ListView.ItemContainerStyle>
 
 
             <ListView.GroupStyle>
