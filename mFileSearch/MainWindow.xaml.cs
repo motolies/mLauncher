@@ -346,6 +346,9 @@ namespace mFileSearch
 
             int totalFile = fileList.Count();
             int curFile = 0;
+
+            Regex regex = new Regex(searchTerm, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
             Parallel.ForEach(fileList, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, (file, stateFile) =>
             {
                 if (ThreadStop)
@@ -362,22 +365,24 @@ namespace mFileSearch
                     if (ThreadStop)
                         break;
 
-                    if ((isRegex && Regex.IsMatch(lineString, searchTerm, RegexOptions.IgnoreCase)) || lineString.ToLower().Contains(searchTerm))
-                    {
-                        Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                        {
-                            MatchedCount++;
-                        }));
+                    Match m = regex.Match(lineString);
 
+                    //if (isRegex && Regex.IsMatch(lineString, searchTerm, RegexOptions.IgnoreCase | RegexOptions.Singleline))
+                    if(isRegex && m.Success)
+                    {
                         lock (syncLineNumber)
                         {
-                            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                            {
-                                //검색 중간중간에 리스트에 뿌린다
-                                FindingFiles.Add(new FileFound() { File = file, Line = lineNumber, Text = lineString });
-                            }));
+                            AddFileFound(file, lineNumber, lineString, m.Value);
                         }
                     }
+                    else if (lineString.ToLower().Contains(searchTerm))
+                    {
+                        lock (syncLineNumber)
+                        {
+                            AddFileFound(file, lineNumber, lineString, searchTerm);
+                        }
+                    }
+
                     lineNumber++;
                 }
                 curFile++;
@@ -390,6 +395,14 @@ namespace mFileSearch
             Console.WriteLine("검색종료 : " + sw.ElapsedMilliseconds);
         }
 
+        private void AddFileFound(string file, int line, string text, string selection)
+        {
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+            {
+                MatchedCount++;
+                FindingFiles.Add(new FileFound() { File = file, Line = line, Text = text, Selection = selection });
+            }));
+        }
 
         #endregion
 
@@ -507,6 +520,7 @@ namespace mFileSearch
         public string File { get; set; }
         public int Line { get; set; }
         public string Text { get; set; }
+        public string Selection { get; set; }
     }
 
     public enum Program

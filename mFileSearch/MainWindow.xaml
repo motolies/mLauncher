@@ -103,15 +103,17 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}
-                                            , Converter={StaticResource WidthConverter}, ConverterParameter=100}">
+                        <!--<GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}} , Converter={StaticResource WidthConverter}, ConverterParameter=100}">-->
+                        <GridViewColumn>    
                             <GridViewColumn.Header>
                                 <TextBlock Text="Text"/>
                             </GridViewColumn.Header>
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
+                                    <!--<base:HighlightTextBlock  Text="{Binding Text}" TextTrimming="WordEllipsis"
+                                         Selection="{Binding SearchText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HighlightColor="LightGreen" Forecolor="Red" />-->
                                     <base:HighlightTextBlock  Text="{Binding Text}" TextTrimming="WordEllipsis"
-                                         Selection="{Binding SearchText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HighlightColor="LightGreen" Forecolor="Red" />
+                                         Selection="{Binding Selection}" HighlightColor="LightGreen" Forecolor="Red" />
 
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
