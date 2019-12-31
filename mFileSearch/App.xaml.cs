@@ -14,6 +14,29 @@ namespace mFileSearch
     /// </summary>
     public partial class App : Application
     {
+        void App_Startup(object sender, StartupEventArgs e)
+        {
+            var parsedArgs = e.Args.Select(s => s.Split(new[] { ':' })).ToDictionary(s => s[0], s =>
+            {
+                string value = string.Empty;
+                for (int i = 1; i < s.Length; i++)
+                    value += s[i];
+                return value;
+            });
 
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            mainWindow.Topmost = true;
+
+            foreach (var p in parsedArgs)
+            {
+                if (p.Key == "d")
+                    mainWindow.Folders.Add(new TargetFolder() { Path = p.Value, Enable = true });
+            }
+
+            mainWindow.Show();
+            mainWindow.Topmost = false;
+
+        }
     }
 }
