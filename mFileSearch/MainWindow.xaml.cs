@@ -397,6 +397,7 @@ namespace mFileSearch
 
         private void AddFileFound(string file, int line, string text, string selection)
         {
+            // winform의 application.doEvent 와 같은 역할(DispatcherPriority.Background)
             Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
             {
                 MatchedCount++;

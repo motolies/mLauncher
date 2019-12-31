@@ -87,9 +87,10 @@
         <GridSplitter Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" ShowsPreview="True" Height="3"/>
 
         <ListView Name="lvResult" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3" ItemsSource="{Binding FindingFiles}"
-		  HorizontalContentAlignment="Stretch"
-                  ContextMenuOpening="lvResult_ContextMenuOpening"   >
-
+		 HorizontalContentAlignment="Stretch" ContextMenuOpening="lvResult_ContextMenuOpening"
+         VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+            <!--listview grouping performance issue-->
+            <!--https://stackoverflow.com/questions/16245194/listview-resize-columns-performance-issues-grouping-->
             <ListView.View>
                 <GridView >
                     <GridView.Columns>
@@ -103,8 +104,8 @@
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <!--<GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}} , Converter={StaticResource WidthConverter}, ConverterParameter=100}">-->
-                        <GridViewColumn>    
+                        <GridViewColumn Width="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}
+                            , Converter={StaticResource WidthConverter}, ConverterParameter=100}">
                             <GridViewColumn.Header>
                                 <TextBlock Text="Text"/>
                             </GridViewColumn.Header>
@@ -112,8 +113,8 @@
                                 <DataTemplate>
                                     <!--<base:HighlightTextBlock  Text="{Binding Text}" TextTrimming="WordEllipsis"
                                          Selection="{Binding SearchText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" HighlightColor="LightGreen" Forecolor="Red" />-->
-                                    <base:HighlightTextBlock  Text="{Binding Text}" TextTrimming="WordEllipsis"
-                                         Selection="{Binding Selection}" HighlightColor="LightGreen" Forecolor="Red" />
+                                    <base:HighlightTextBlock  Text="{Binding Text}" Selection="{Binding Selection}" 
+                                                              HighlightColor="LightGreen" Forecolor="Red" TextTrimming="WordEllipsis" />
 
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
@@ -127,7 +128,6 @@
                     <EventSetter Event="PreviewMouseDoubleClick" Handler="LvResult_PreviewMouseDoubleClick" />
                 </Style>
             </ListView.ItemContainerStyle>
-
 
             <ListView.GroupStyle>
                 <GroupStyle>
@@ -160,7 +160,6 @@
                 </GroupStyle>
             </ListView.GroupStyle>
         </ListView>
-
 
         <StatusBar Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="3" >
             <Grid HorizontalAlignment="{Binding HorizontalAlignment, RelativeSource={RelativeSource AncestorType=ContentPresenter}, Mode=OneWayToSource}">
