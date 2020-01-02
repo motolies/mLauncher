@@ -16,13 +16,18 @@ namespace mFileSearch
     {
         void App_Startup(object sender, StartupEventArgs e)
         {
-            var parsedArgs = e.Args.Select(s => s.Split(new[] { ':' })).ToDictionary(s => s[0], s =>
-            {
+
+            var parsedArgs = e.Args.Select(args => {
+                string[] strArray = args.Split(new[] { '=' });
                 string value = string.Empty;
-                for (int i = 1; i < s.Length; i++)
-                    value += s[i];
-                return value;
-            });
+                for (int i = 1; i < strArray.Length; i++)
+                    value += strArray[i];
+                return new ArgsOptions()
+                {
+                    Key = strArray[0],
+                    Value = value
+                };
+            }).ToList();
 
             MainWindow mainWindow = new MainWindow();
             mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -30,13 +35,18 @@ namespace mFileSearch
 
             foreach (var p in parsedArgs)
             {
-                if (p.Key == "d")
+                if (p.Key == "dir")
                     mainWindow.Folders.Add(new TargetFolder() { Path = p.Value, Enable = true });
             }
 
             mainWindow.Show();
             mainWindow.Topmost = false;
 
+        }
+        class ArgsOptions
+        {
+            public string Key { get; set; }
+            public string Value { get; set; }
         }
     }
 }

@@ -335,10 +335,21 @@ namespace mFileSearch
             string searchTerm = condition.ToLower();
             string[] filter = fileFilter.Trim().ToLower().Replace("*.*", string.Empty).Replace("*", string.Empty).Split(';');
 
-            foreach (string folder in folders.Where(f => f.Enable == true).Select(f => f.Path).ToList())
+            try
             {
-                SearchOption so = isSubFolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-                files.AddRange(Directory.GetFiles(folder, "*.*", so));
+                foreach (string folder in folders.Where(f => f.Enable == true).Select(f => f.Path).ToList())
+                {
+                    SearchOption so = isSubFolder ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                    files.AddRange(Directory.GetFiles(folder, "*.*", so));
+                }
+            }
+            catch (UnauthorizedAccessException unauthorizedAccessException)
+            {
+                Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
+                {
+                    MessageBox.Show(unauthorizedAccessException.Message);
+                }));
+                return;
             }
 
             var withoutFiles = files.Where(ext => !ext.EndWith(ExtentionWithout));
@@ -368,7 +379,7 @@ namespace mFileSearch
                     Match m = regex.Match(lineString);
 
                     //if (isRegex && Regex.IsMatch(lineString, searchTerm, RegexOptions.IgnoreCase | RegexOptions.Singleline))
-                    if(isRegex && m.Success)
+                    if (isRegex && m.Success)
                     {
                         lock (syncLineNumber)
                         {
