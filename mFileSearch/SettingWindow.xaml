@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mFileSearch"
         mc:Ignorable="d"
-        Title="SettingWindow" Height="300" Width="400" Closing="Window_Closing" Icon="Resources/searchicon.ico">
+        Title="SettingWindow" Height="300" Width="400" MinHeight="300" MinWidth="400" Closing="Window_Closing" Icon="Resources/searchicon.ico"
+        Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1 *" />
@@ -29,9 +30,12 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Text="검색어 초기화" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Grid.Column="0" Grid.Row="1" Text="확장자 필터 초기화" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="탐색기 컨텍스트 메뉴 사용" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5"/>
 
                     <Button Click="ConditionReset_Click" Content="초기화" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
                     <Button Click="FilterReset_Click" Content="초기화" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                    <CheckBox x:Name="chkExplorerMenu" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" IsChecked="{Binding ExplorerContext}" 
+                               />
                 </Grid>
             </TabItem>
             <TabItem Header="Tabs">

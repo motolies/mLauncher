@@ -69,6 +69,7 @@
     </ApplicationDefinition>
     <Compile Include="Base\ControlWidthConverter.cs" />
     <Compile Include="Base\HighlightTextBlock.cs" />
+    <Compile Include="Base\RegistryHelper.cs" />
     <Compile Include="SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
