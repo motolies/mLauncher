@@ -523,7 +523,28 @@ namespace mLauncher
             if (string.IsNullOrWhiteSpace(btn.Path))
                 return;
 
-            Process.Start(btn.Path);
+            if (!File.Exists(btn.Path))
+            {
+                MessageBox.Show(string.Format("해당 경로의 파일이 없습니다.\r\n{0}", btn.Path));
+                return;
+            }
+
+            if (Path.GetExtension(btn.Path).ToLower() == ".bat")
+            {
+                string path = Path.GetDirectoryName(btn.Path);
+                string file = Path.GetFileName(btn.Path);
+
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.WorkingDirectory = path;
+                psi.FileName = "cmd.exe";
+                psi.Arguments = string.Format("/C \"{0}\"", file);
+                Process.Start(psi);
+            }
+            else
+            {
+                Process.Start(btn.Path);
+            }
+
         }
 
         #region thread timer
