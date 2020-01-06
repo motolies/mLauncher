@@ -10,7 +10,6 @@
 
     <Window.Resources>
 
-
         <!-- style https://docs.microsoft.com/en-us/dotnet/desktop-wpf/fundamentals/styles-templates-overview -->
         <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" x:Key="StatusButton">
             <Setter Property="BorderBrush" Value="Transparent"/>

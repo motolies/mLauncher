@@ -7,7 +7,11 @@
              xmlns:mLauncher="clr-namespace:mLauncher" x:Class="mLauncher.Control.MButton"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="100" >
-    <Button Click="Button_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"   >
+    <Button Click="Button_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  
+            ToolTipService.InitialShowDelay="0" 
+            ToolTipService.ShowDuration="20000" 
+            ToolTipService.BetweenShowDelay="1" 
+            ToolTip="{Binding Text}">
         <Grid >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
