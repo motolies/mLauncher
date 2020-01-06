@@ -6,22 +6,22 @@
              xmlns:local="clr-namespace:mLauncher.Control"
              xmlns:mLauncher="clr-namespace:mLauncher" x:Class="mLauncher.Control.MButton"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100" >
+             d:DesignHeight="100" d:DesignWidth="100" SizeChanged="ButtonSizeChanged">
     <Button Click="Button_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"  
             ToolTipService.InitialShowDelay="0" 
             ToolTipService.ShowDuration="20000" 
             ToolTipService.BetweenShowDelay="1" 
             ToolTip="{Binding Text}">
-        <Grid >
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="20" />
+                <RowDefinition x:Name="textBlockDefinition" Height="20" />
             </Grid.RowDefinitions>
             <Image Source="{Binding IconImage}" Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" />
-            <TextBlock Text="{Binding Text}" Grid.Column="0" Grid.Row="1" TextAlignment="Center" FontSize="11" />
+            <TextBlock x:Name="textBlock" Text="{Binding Text}" Grid.Column="0" Grid.Row="1" TextAlignment="Center" FontSize="11" />
         </Grid>
     </Button>
 

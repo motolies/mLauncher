@@ -67,6 +67,29 @@ namespace mLauncher.Control
             return base.ToString() + Environment.NewLine + msg;
         }
 
+        private void ButtonSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double width = this.ActualWidth;
+            double height = this.ActualHeight;
+
+            if (width > 50 && height > 50)
+            {
+                textBlockDefinition.Height = new GridLength(20);
+                textBlock.VerticalAlignment = VerticalAlignment.Center;
+                Grid.SetRow(textBlock, 1);
+            }
+            else
+            {
+                textBlockDefinition.Height = new GridLength(0);
+                textBlock.VerticalAlignment = VerticalAlignment.Bottom;
+                Grid.SetRow(textBlock, 0);
+                Console.WriteLine("stroke text 구현????????");
+
+            }
+        }
+
+
+
 
     }
 }
