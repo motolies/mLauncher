@@ -116,6 +116,7 @@ namespace mFileSearch
             {
                 { "Open", "열기" },
                 { "NotepadPlus", "Notepad++로 열기" },
+                { "VSCode", "VSCode로 열기" },
                 { "Explorer", "탐색기" },
             };
 
@@ -164,6 +165,28 @@ namespace mFileSearch
                         }
                     }
                     Process.Start(DataBase.GetProgram(Program.NotepadPlus), string.Format("\"{0}\" -n{1}", fileFound.File, fileFound.Line));
+                    break;
+                case "VSCode":
+                    string vscode = DataBase.GetProgram(Program.VSCode);
+                    if (string.IsNullOrWhiteSpace(vscode) || !File.Exists(vscode))
+                    {
+                        MessageBox.Show("VSCode 실행파일을 선택해주세요.");
+
+                        CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+                        dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                        dialog.Filters.Add(new CommonFileDialogFilter("EXE", "*.exe"));
+                        if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                        {
+                            // notepad ++ 경로저장 후 실행
+                            DataBase.SetProgram(Program.VSCode, dialog.FileName);
+                        }
+                        else
+                        {
+                            MessageBox.Show("VSCode 실행파일을 선택해야 사용하실 수 있습니다.");
+                            return;
+                        }
+                    }
+                    Process.Start(DataBase.GetProgram(Program.VSCode), string.Format("-g \"{0}:{1}\"", fileFound.File, fileFound.Line));
                     break;
                 case "Explorer":
                     Process.Start("explorer.exe", string.Format(@"/select,""{0}""", fileFound.File));
@@ -537,7 +560,7 @@ namespace mFileSearch
 
     public enum Program
     {
-        NotepadPlus
+        NotepadPlus, VSCode
     }
 
 
