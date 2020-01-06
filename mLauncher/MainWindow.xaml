@@ -6,9 +6,38 @@
         xmlns:local="clr-namespace:mLauncher"
         xmlns:control="clr-namespace:mLauncher.Control"
         mc:Ignorable="d"
-        Title="mLauncher" Height="300" Width="500" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Icon="icon.ico" SizeChanged="Window_SizeChanged" >
+        Title="mLauncher" Height="326" Width="500" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Icon="icon.ico" SizeChanged="Window_SizeChanged" >
+
+    <Window.Resources>
+
+
+        <!-- style https://docs.microsoft.com/en-us/dotnet/desktop-wpf/fundamentals/styles-templates-overview -->
+        <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button" x:Key="StatusButton">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+        </Style>
+
+    </Window.Resources>
 
     <Grid>
-        <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1 *" />
+            <RowDefinition Height="26" />
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Column="0" Grid.Row="0" x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
+        <StatusBar Grid.Column="0" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" >
+                
+                <Button x:Name="btnFileSearch" Style="{StaticResource StatusButton}" Click="StatusButton_Click">
+                    <!-- 이미지 넣는방법 정리 https://insurang.tistory.com/187 -->
+                    <Image Source="pack://application:,,,/Resources/searchicon.ico" Stretch="UniformToFill"/>
+                </Button>
+
+            </StackPanel>
+        </StatusBar>
     </Grid>
 </Window>

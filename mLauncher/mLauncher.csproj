@@ -153,6 +153,9 @@
   <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\searchicon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)*.*" "$(SolutionDir)$(OutDir)" /Y /S

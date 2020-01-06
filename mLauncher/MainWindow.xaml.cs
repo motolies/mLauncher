@@ -463,11 +463,34 @@ namespace mLauncher
             }
             else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Q)
             {
-                Process.Start("mFileSearch.exe");
+                StartSubProgram("mFileSearch.exe");
             }
 
         }
 
+        private void StatusButton_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            switch (btn.Name)
+            {
+                case  "btnFileSearch" :
+                    StartSubProgram("mFileSearch.exe");
+                    return;
+            }
+        }
+
+        private void StartSubProgram(string file)
+        {
+            try
+            {
+                Process.Start(file);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("실행에 실패하였습니다.");
+                Console.WriteLine(ex.Message);
+            }
+        }
 
 
         #endregion
@@ -594,6 +617,6 @@ namespace mLauncher
             DataBase.SetSetting("HEIGHT", WindowHeight.ToString());
         }
 
-
+       
     }
 }
