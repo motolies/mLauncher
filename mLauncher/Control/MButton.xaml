@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:mLauncher.Control"
+             xmlns:base="clr-namespace:mLauncher.Base"
              xmlns:mLauncher="clr-namespace:mLauncher" x:Class="mLauncher.Control.MButton"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="100" SizeChanged="ButtonSizeChanged">
@@ -20,8 +21,17 @@
                 <RowDefinition Height="*" />
                 <RowDefinition x:Name="textBlockDefinition" Height="20" />
             </Grid.RowDefinitions>
-            <Image Source="{Binding IconImage}" Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" />
-            <TextBlock x:Name="textBlock" Text="{Binding Text}" Grid.Column="0" Grid.Row="1" TextAlignment="Center" FontSize="11" />
+            <Image x:Name="image" Source="{Binding IconImage}" Grid.Row="0" Grid.Column="0" Margin="5,5,5,0" VerticalAlignment="Center"/>
+            <!--<TextBlock x:Name="textBlock" Text="{Binding Text}" Grid.Column="0" Grid.Row="1" TextAlignment="Center" FontSize="11" />-->
+
+            <base:OutlinedTextBlock x:Name="textBlock" Grid.Column="0" Grid.Row="1" Text="{Binding Text}"
+                   FontSize="11" FontWeight="Normal" TextWrapping="NoWrap" Margin="1"
+                                    StrokeThickness="4" Stroke="WhiteSmoke" Fill="Black" HorizontalAlignment="Center">
+                
+            </base:OutlinedTextBlock>
+
+
+
         </Grid>
     </Button>
 

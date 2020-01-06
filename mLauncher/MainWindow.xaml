@@ -36,6 +36,7 @@
                     <Image Source="pack://application:,,,/Resources/searchicon.ico" Stretch="UniformToFill"/>
                 </Button>
 
+                
             </StackPanel>
         </StatusBar>
     </Grid>

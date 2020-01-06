@@ -473,7 +473,7 @@ namespace mLauncher
             var btn = sender as Button;
             switch (btn.Name)
             {
-                case  "btnFileSearch" :
+                case "btnFileSearch":
                     StartSubProgram("mFileSearch.exe");
                     return;
             }
@@ -483,7 +483,8 @@ namespace mLauncher
         {
             try
             {
-                Process.Start(file);
+                string exefile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), file);
+                Process.Start(exefile);
             }
             catch (Exception ex)
             {
@@ -565,7 +566,11 @@ namespace mLauncher
             }
             else
             {
-                Process.Start(btn.Path);
+                try
+                {
+                    Process.Start(btn.Path);
+                }
+                catch { }
             }
 
         }
@@ -617,6 +622,6 @@ namespace mLauncher
             DataBase.SetSetting("HEIGHT", WindowHeight.ToString());
         }
 
-       
+
     }
 }
