@@ -547,7 +547,8 @@ namespace mLauncher
             if (string.IsNullOrWhiteSpace(btn.Path))
                 return;
 
-            if (!File.Exists(btn.Path))
+
+            if (File.GetAttributes(btn.Path) != FileAttributes.Directory && !File.Exists(btn.Path))
             {
                 MessageBox.Show(string.Format("해당 경로의 파일이 없습니다.\r\n{0}", btn.Path));
                 return;
