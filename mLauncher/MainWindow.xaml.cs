@@ -475,7 +475,20 @@ namespace mLauncher
             {
                 case "btnFileSearch":
                     StartSubProgram("mFileSearch.exe");
-                    return;
+                    break;
+                case "btnShutdown":
+                    {
+                        MessageBoxResult dialog = MessageBox.Show("저장하지 않은 내용은 사라집니다.\r\n컴퓨터를 종료하시겠습니까?", "종료"
+                            , MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Cancel);
+                        if (dialog == MessageBoxResult.Yes)
+                        {
+                            ProcessStartInfo psi = new ProcessStartInfo();
+                            psi.FileName = "shutdown.exe";
+                            psi.Arguments = "-s -f -t 00";
+                            Process.Start(psi);
+                        }
+                    }
+                    break;
             }
         }
 
