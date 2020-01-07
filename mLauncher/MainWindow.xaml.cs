@@ -489,6 +489,13 @@ namespace mLauncher
                         }
                     }
                     break;
+                case "btnWindowMove":
+                    {
+                        MoveWindow moveWindow = new MoveWindow();
+                        moveWindow.Owner = this;
+                        moveWindow.ShowDialog();
+                    }
+                    break;
             }
         }
 

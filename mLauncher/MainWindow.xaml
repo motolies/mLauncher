@@ -44,6 +44,9 @@
                     <Button x:Name="btnShutdown" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right">
                         <Image Source="pack://application:,,,/Resources/shutdown.png" Stretch="UniformToFill"/>
                     </Button>
+                    <Button x:Name="btnWindowMove" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right">
+                        <Image Source="pack://application:,,,/Resources/move.png" Stretch="UniformToFill"/>
+                    </Button>
                 </WrapPanel>
             </Grid>
         </StatusBar>
