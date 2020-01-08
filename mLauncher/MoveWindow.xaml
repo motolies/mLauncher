@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mLauncher"
         mc:Ignorable="d"
-        Title="MoveWindow" Height="117.203" Width="248.75" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="MoveWindow" Height="117.203" Width="248.75" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="Window_Loaded" >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1 *" />
@@ -16,7 +16,7 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Process 명을 입력해주세요." VerticalAlignment="Center" Margin="5 2"/>
-        <TextBox Grid.Row="1" Text="{Binding ProcessName}" Margin="5 2" KeyDown="ProcessName_KeyDown" />
-        <Button Grid.Row="2" Content="이 동" Margin="5 2" Click="MoveButton_Click"/>
+        <TextBox x:Name="txtProcess" Grid.Row="1" Text="{Binding ProcessName}" Margin="5 2" KeyDown="ProcessName_KeyDown" />
+        <Button Grid.Row="2" Content="이 동" Margin="5 2 5 4" Click="MoveButton_Click"/>
     </Grid>
 </Window>

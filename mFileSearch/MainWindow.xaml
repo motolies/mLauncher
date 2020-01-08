@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:mFileSearch"
         xmlns:base="clr-namespace:mFileSearch.Base"
         mc:Ignorable="d"
-        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" Closing="Window_Closing" Icon="Resources/searchicon.ico" >
+        Title="mFileSearch" Height="500" Width="600" MinWidth="600" MinHeight="500" Closing="Window_Closing" Loaded="Window_Loaded" Icon="Resources/searchicon.ico" >
 
     <Window.Resources>
         <local:InverseBooleanConverter x:Key="BooleanConverter"/>
@@ -32,7 +32,7 @@
 
         <TextBlock Text="검색어" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <ComboBox Name="cboCondition" ItemsSource="{Binding Conditions}" SelectedItem="{Binding SimpleStringProperty, Mode=TwoWay}" Grid.Column="1" Grid.Row="0" 
-                  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True"/>
+                  IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}" VerticalAlignment="Center" Margin="0,0,5,0" IsEditable="True" KeyDown="cboCondition_KeyDown"/>
         <Button Content="검  색" Click="Search_Click" Grid.Column="2" Grid.Row="0" Height="22" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource BooleanConverter}}"/>
         <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" BorderThickness="0.5" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" VerticalAlignment="Bottom"/>
 

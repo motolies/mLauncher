@@ -541,7 +541,19 @@ namespace mFileSearch
             }
         }
 
+        private void cboCondition_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                Search_Click(null, null);
+            }
+        }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.cboCondition.Focus();
+            this.cboCondition.Text = string.Empty;
+        }
     }
 
     public class TargetFolder
