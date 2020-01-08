@@ -35,16 +35,19 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <WrapPanel Grid.Column="0" FlowDirection="LeftToRight" Orientation="Horizontal">
-                    <Button x:Name="btnFileSearch" Style="{StaticResource StatusButton}" Click="StatusButton_Click">
+                    <Button x:Name="btnFileSearch" Style="{StaticResource StatusButton}" Click="StatusButton_Click"
+                            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="20000" ToolTipService.BetweenShowDelay="1" ToolTip="mFileSearch">
                         <!-- 이미지 넣는방법 정리 https://insurang.tistory.com/187 -->
                         <Image Source="pack://application:,,,/Resources/searchicon.ico" Stretch="UniformToFill"/>
                     </Button>
                 </WrapPanel>
                 <WrapPanel Grid.Column="1" FlowDirection="RightToLeft" Orientation="Horizontal" Margin="0 0 6 0">
-                    <Button x:Name="btnShutdown" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right">
+                    <Button x:Name="btnShutdown" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right"
+                            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="20000" ToolTipService.BetweenShowDelay="1" ToolTip="PC Shutdown">
                         <Image Source="pack://application:,,,/Resources/shutdown.png" Stretch="UniformToFill"/>
                     </Button>
-                    <Button x:Name="btnWindowMove" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right">
+                    <Button x:Name="btnWindowMove" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right"
+                            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="20000" ToolTipService.BetweenShowDelay="1" ToolTip="Move Window">
                         <Image Source="pack://application:,,,/Resources/move.png" Stretch="UniformToFill"/>
                     </Button>
                 </WrapPanel>
