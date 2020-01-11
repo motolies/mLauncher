@@ -61,6 +61,11 @@ namespace mLauncher.Base
             return conn.ExecuteReader("SELECT * FROM Button;");
         }
 
+        internal static DataTable GetButton(string tabId, int col, int row)
+        {
+            return conn.ExecuteReader(string.Format("SELECT * FROM Button WHERE TabId = '{0}' AND Col = {1} AND Row = {2};", tabId, col, row));
+        }
+
         internal static DataTable ExecuteReader(string sql)
         {
             return conn.ExecuteReader(sql);
@@ -74,7 +79,8 @@ namespace mLauncher.Base
         internal static int InsertButton(string tabId, int col, int row, string name, string path, byte[] icon)
         {
             SQLiteCommand command = new SQLiteCommand();
-            command.CommandText = "INSERT OR IGNORE INTO Button(TabId, Col, Row, Name, Path, Icon) VALUES (@tab, @col, @row, @name, @path, @icon);";
+            command.CommandText = @"DELETE FROM Button WHERE TabId = @tab AND Col = @col AND Row = @row; 
+                                    INSERT OR IGNORE INTO Button(TabId, Col, Row, Name, Path, Icon) VALUES (@tab, @col, @row, @name, @path, @icon);";
             command.Parameters.Add("@tab", DbType.String).Value = tabId;
             command.Parameters.Add("@col", DbType.Int32).Value = col;
             command.Parameters.Add("@row", DbType.Int32).Value = row;

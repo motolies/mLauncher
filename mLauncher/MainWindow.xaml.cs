@@ -288,13 +288,14 @@ namespace mLauncher
         {
             if (e.Data.GetDataPresent(typeof(MButton)))
             {
-                // 버튼끼리의 위치이동 구현예정
-
                 var origin = e.Data.GetData(typeof(MButton)) as MButton;
                 var btn = sender as MButton;
+
                 if (origin.Col != btn.Col || origin.Row != btn.Row)
                 {
                     string path = origin.Path;
+                    string bpath = btn.Path;
+
                     if (!File.Exists(path) && !Directory.Exists(path))
                         return;
 
@@ -303,6 +304,9 @@ namespace mLauncher
 
                     InsertButton(btn, path);
                     DeleteButton(origin);
+
+                    if (!string.IsNullOrWhiteSpace(bpath))
+                        InsertButton(origin, bpath);
                 }
             }
             else
@@ -567,32 +571,36 @@ namespace mLauncher
             if (string.IsNullOrWhiteSpace(btn.Path))
                 return;
 
-
-            if (File.GetAttributes(btn.Path) != FileAttributes.Directory && !File.Exists(btn.Path))
+            try
             {
-                MessageBox.Show(string.Format("해당 경로의 파일이 없습니다.\r\n{0}", btn.Path));
-                return;
-            }
-
-            if (Path.GetExtension(btn.Path).ToLower() == ".bat")
-            {
-                string path = Path.GetDirectoryName(btn.Path);
-                string file = Path.GetFileName(btn.Path);
-
-                ProcessStartInfo psi = new ProcessStartInfo();
-                psi.WorkingDirectory = path;
-                psi.FileName = "cmd.exe";
-                psi.Arguments = string.Format("/C \"{0}\"", file);
-                Process.Start(psi);
-            }
-            else
-            {
-                try
+                if (File.Exists(btn.Path))
                 {
-                    Process.Start(btn.Path);
+                    if (Path.GetExtension(btn.Path).ToLower() == ".bat")
+                    {
+                        string path = Path.GetDirectoryName(btn.Path);
+                        string file = Path.GetFileName(btn.Path);
+
+                        ProcessStartInfo psi = new ProcessStartInfo();
+                        psi.WorkingDirectory = path;
+                        psi.FileName = "cmd.exe";
+                        psi.Arguments = string.Format("/C \"{0}\"", file);
+                        Process.Start(psi);
+                    }
+                    else
+                    {
+                        Process.Start(btn.Path);
+                    }
                 }
-                catch { }
+                else if (Directory.Exists(btn.Path))
+                    Process.Start(btn.Path);
+                else
+                {
+                    MessageBox.Show(string.Format("해당 경로의 파일이 없습니다.\r\n{0}", btn.Path));
+                    return;
+                }
+
             }
+            catch { }
 
         }
 
