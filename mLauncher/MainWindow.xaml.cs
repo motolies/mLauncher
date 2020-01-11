@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using mEX;
+using mUT;
 
 namespace mLauncher
 {
@@ -429,23 +430,15 @@ namespace mLauncher
 
         #endregion
 
+        
+
+
+
+
         #region global hotkey hook
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        public static extern bool GetCursorPos(out POINT pt);
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
-        {
-            public int X;
-            public int Y;
-
-            public POINT(int x, int y)
-            {
-                this.X = x;
-                this.Y = y;
-            }
-        }
+      
 
         KeyboardHook hook = new KeyboardHook();
 
@@ -523,8 +516,8 @@ namespace mLauncher
         private void WindowShow()
         {
             // 현재 커서위치 알아오기
-            POINT CursorPoint = new POINT();
-            GetCursorPos(out CursorPoint);
+
+            System.Windows.Point CursorPoint = MouseCursor.GetCursorPos(this);
 
             this.Left = CursorPoint.X;
             this.Top = CursorPoint.Y;
