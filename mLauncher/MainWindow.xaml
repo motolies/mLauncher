@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:mLauncher"
         xmlns:control="clr-namespace:mLauncher.Control"
         mc:Ignorable="d"
-        Title="mLauncher" Height="326" Width="500" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Icon="icon.ico" SizeChanged="Window_SizeChanged" >
+        Title="mLauncher" Height="326" Width="500" Closing="Window_Closing" WindowStartupLocation="CenterScreen" Icon="icon.ico" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded" StateChanged="Window_StateChanged" >
 
     <Window.Resources>
 

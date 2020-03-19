@@ -29,7 +29,7 @@ namespace mLauncher
     {
         private int WindowWidth = 0;
         private int WindowHeight = 0;
-        private bool IsTopMost;
+        private bool IsTopMost = true;
         private int tabCount = 1;
         private int colCount = 0;
         private int rowCount = 0;
@@ -55,9 +55,6 @@ namespace mLauncher
             this.Width = WindowWidth = int.Parse(width);
             this.Height = WindowHeight = int.Parse(height);
 
-            string topMost = DataBase.GetSetting("TOPMOST");
-            IsTopMost = bool.Parse(topMost);
-
             string cols = DataBase.GetSetting("COLS");
             string rows = DataBase.GetSetting("ROWS");
             colCount = int.Parse(cols);
@@ -65,7 +62,6 @@ namespace mLauncher
 
             this.PreviewMouseWheel += new MouseWheelEventHandler(Window_PreviewMouseWheel);
             ResizeTimer.Tick += Window_ResizeTimer_Tick;
-
 
             SetContextMenu();
             DrawLauncher();
@@ -526,7 +522,8 @@ namespace mLauncher
             // 우선은 최상단에 보이게 한 후에 다시 설정값으로 변경
             this.Topmost = true;
             this.Show();
-            this.Topmost = IsTopMost;
+            this.Activate();
+
         }
 
 
@@ -607,6 +604,9 @@ namespace mLauncher
                 Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
                 {
                     //txtDatetime.Text = DateTime.Now.ToString("yyyy-MM-dd(ddd) tt hh:mm:ss");
+
+                    // window 화면이 뜰 때는 무조건 true로 띄우고 여기서 값을 바꾸자
+                    this.Topmost = IsTopMost;
                 }));
 
             });
@@ -644,6 +644,17 @@ namespace mLauncher
             DataBase.SetSetting("HEIGHT", WindowHeight.ToString());
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // 이것만 로드 된 후로 변경하자
+            string topMost = DataBase.GetSetting("TOPMOST");
+            IsTopMost = bool.Parse(topMost);
+        }
 
+        private void Window_StateChanged(object sender, EventArgs e)
+        {
+            // 원격세션에서 창에 검정색으로 나오는 걸 막기 위해서 여기에서 한 번 더 그려준다
+            
+        }
     }
 }
