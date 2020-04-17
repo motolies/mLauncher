@@ -144,6 +144,10 @@
       <Project>{a96f9963-701b-4c97-a4d1-3d8bd5cc50b7}</Project>
       <Name>mUT</Name>
     </ProjectReference>
+    <ProjectReference Include="..\mWA\mWA.csproj">
+      <Project>{00b14cc9-cdf6-4a66-869b-b153cbc1f2c0}</Project>
+      <Name>mWA</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">

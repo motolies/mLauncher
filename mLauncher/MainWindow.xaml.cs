@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -15,10 +14,11 @@ using Form = System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Runtime.InteropServices;
 using System.Reflection;
 using mEX;
 using mUT;
+using mWA;
+using System.Windows.Interop;
 
 namespace mLauncher
 {
@@ -445,6 +445,11 @@ namespace mLauncher
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Q);
 
+            // volume
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Right);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Left);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Down);
+
         }
 
         private void Global_KeyPressed(object sender, KeyPressedEventArgs e)
@@ -457,6 +462,18 @@ namespace mLauncher
             else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Q)
             {
                 StartSubProgram("mFileSearch.exe");
+            }
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Right)
+            {
+                Volume.VolUp(new WindowInteropHelper(this).Handle);
+            }
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Left)
+            {
+                Volume.VolDown(new WindowInteropHelper(this).Handle);
+            }
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Down)
+            {
+                Volume.Mute(new WindowInteropHelper(this).Handle);
             }
 
         }
