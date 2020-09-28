@@ -426,7 +426,7 @@ namespace mLauncher
 
         #endregion
 
-        
+
 
 
 
@@ -434,7 +434,7 @@ namespace mLauncher
         #region global hotkey hook
 
 
-      
+
 
         KeyboardHook hook = new KeyboardHook();
 
@@ -540,6 +540,10 @@ namespace mLauncher
             this.Topmost = true;
             this.Show();
             this.Activate();
+
+            // 리모트 데스크탑 강제로 다시 렌더링하기
+            this.UpdateLayout();
+
 
         }
 
@@ -671,7 +675,7 @@ namespace mLauncher
         private void Window_StateChanged(object sender, EventArgs e)
         {
             // 원격세션에서 창에 검정색으로 나오는 걸 막기 위해서 여기에서 한 번 더 그려준다
-            
+
         }
     }
 }
