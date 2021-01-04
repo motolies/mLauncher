@@ -46,6 +46,10 @@
                             ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="20000" ToolTipService.BetweenShowDelay="1" ToolTip="PC Shutdown">
                         <Image Source="pack://application:,,,/Resources/shutdown.png" Stretch="UniformToFill"/>
                     </Button>
+                    <Button x:Name="btnLockScreen" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right"
+                            ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="20000" ToolTipService.BetweenShowDelay="1" ToolTip="PC LockScreen">
+                        <Image Source="pack://application:,,,/Resources/circlelock.png" Stretch="UniformToFill"/>
+                    </Button>
                     <Button x:Name="btnWindowMove" Style="{StaticResource StatusButton}" Click="StatusButton_Click" HorizontalContentAlignment="Right"
                             ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="20000" ToolTipService.BetweenShowDelay="1" ToolTip="Move Window">
                         <Image Source="pack://application:,,,/Resources/move.png" Stretch="UniformToFill"/>

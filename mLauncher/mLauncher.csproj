@@ -178,6 +178,9 @@
   <ItemGroup>
     <Resource Include="Resources\move.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\circlelock.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)*.*" "$(SolutionDir)$(OutDir)" /Y /S

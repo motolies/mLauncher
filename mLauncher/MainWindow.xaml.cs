@@ -506,6 +506,22 @@ namespace mLauncher
                         moveWindow.ShowDialog();
                     }
                     break;
+                case "btnLockScreen":
+                    {
+                        MessageBoxResult dialog = MessageBox.Show("윈도우 화면을 잠그시겠습니까?", "잠금"
+                            , MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Cancel);
+                        if (dialog == MessageBoxResult.Yes)
+                        {
+                            ProcessStartInfo psi = new ProcessStartInfo();
+                            psi.FileName = "rundll32.exe";
+                            psi.Arguments = "user32.dll,LockWorkStation";
+                            Process.Start(psi);
+                        }
+
+
+                    }
+                    break;
+
             }
         }
 
