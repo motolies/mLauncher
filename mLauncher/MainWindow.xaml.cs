@@ -444,6 +444,7 @@ namespace mLauncher
 
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Q);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.R);
 
             // volume
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt, Form.Keys.Right);
@@ -462,6 +463,10 @@ namespace mLauncher
             else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Q)
             {
                 StartSubProgram("mFileSearch.exe");
+            }
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.R)
+            {
+                StartSubProgram("mRenamer.exe");
             }
             else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt) && e.Key == Form.Keys.Right)
             {
@@ -517,8 +522,6 @@ namespace mLauncher
                             psi.Arguments = "user32.dll,LockWorkStation";
                             Process.Start(psi);
                         }
-
-
                     }
                     break;
 

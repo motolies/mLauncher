@@ -1,0 +1,112 @@
+﻿<Window x:Class="mRenamer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:bs="clr-namespace:mRenamer.Base"
+        xmlns:local="clr-namespace:mRenamer"
+        xmlns:uc="clr-namespace:mRenamer.Control"
+        mc:Ignorable="d"
+        Title="mRenamer"
+        Height="450"
+        Width="800"
+        MinHeight="450"
+        MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        Icon="icon.ico"
+        Name="Main">
+    <Window.Resources>
+        <bs:CountToBooleanConverter x:Key="converter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <!--<RowDefinition Height="26"/>-->
+        </Grid.RowDefinitions>
+        <!-- 상위 그리드 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="180" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <!-- https://learn.microsoft.com/en-us/dotnet/desktop/wpf/events/routed-events-overview?view=netdesktop-6.0&redirectedfrom=MSDN -->
+            <WrapPanel Grid.Column="0"
+                       Background="LightBlue"
+                       Button.Click="MenuButton_Click">
+                <uc:MenuButton x:Name="Apply"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="변경 적용" />
+                <uc:MenuButton x:Name="Cancel"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="변경 취소" />
+                <uc:MenuButton x:Name="ClearFileInfo"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="목록 지우기" />
+                <Rectangle Width="180"
+                           Height="5" />
+                <uc:MenuButton x:Name="RemoveFileName"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="파일명 지우기" />
+                <uc:MenuButton x:Name="RemovePosition"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="위치 지우기" />
+                <Rectangle Width="180"
+                           Height="5" />
+                <uc:MenuButton x:Name="AddNumber"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="번호 붙이기" />
+                <uc:MenuButton x:Name="ZeroPadding"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="자릿수 맞추기" />
+                <Rectangle Width="180"
+                           Height="5" />
+                <uc:MenuButton x:Name="AddPrefix"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="앞이름 붙이기" />
+                <uc:MenuButton x:Name="AddPostfix"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="뒷이름 붙이기" />
+                <Rectangle Width="180"
+                           Height="5" />
+                <uc:MenuButton x:Name="Replace"
+                               DataContext="{Binding ElementName=Main}"
+                               IsEnabled="{Binding Path=FileInfos.Count, Converter={StaticResource converter}}"
+                               Text="문자열 바꾸기" />
+
+
+            </WrapPanel>
+
+            <!-- ListView -->
+            <ListView Grid.Column="1"
+                      ItemsSource="{Binding FileInfos}"
+                      Name="lv"
+                      AllowDrop="True"
+                      DragEnter="lv_DragEnter"
+                      Drop="lv_Drop"
+                      KeyDown="lv_KeyDown">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="변경할 파일명"
+                                        DisplayMemberBinding="{Binding targetFileName}"
+                                        Width="250" />
+                        <GridViewColumn Header="원본 파일명"
+                                        DisplayMemberBinding="{Binding originalFileName}"
+                                        Width="250" />
+                        <GridViewColumn Header="파일 경로"
+                                        DisplayMemberBinding="{Binding path}"
+                                        Width="100" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+    </Grid>
+</Window>

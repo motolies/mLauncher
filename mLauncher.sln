@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mLauncher", "mLauncher\mLauncher.csproj", "{35AD2F69-E326-4E39-BEDF-011FD7BA4CAC}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mRegistryHelper", "mRegistryHelper\mRegistryHelper.csproj", "{EDC3A517-A649-4DAC-A67D-3D226DF3AE0C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mWA", "mWA\mWA.csproj", "{00B14CC9-CDF6-4A66-869B-B153CBC1F2C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mRenamer", "mRenamer\mRenamer.csproj", "{76798370-BDEA-41B5-9F51-F00ABEF09D69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{00B14CC9-CDF6-4A66-869B-B153CBC1F2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00B14CC9-CDF6-4A66-869B-B153CBC1F2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00B14CC9-CDF6-4A66-869B-B153CBC1F2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76798370-BDEA-41B5-9F51-F00ABEF09D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76798370-BDEA-41B5-9F51-F00ABEF09D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76798370-BDEA-41B5-9F51-F00ABEF09D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76798370-BDEA-41B5-9F51-F00ABEF09D69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
