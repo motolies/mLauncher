@@ -76,11 +76,16 @@
     <Compile Include="Control\MenuButton.xaml.cs">
       <DependentUpon>MenuButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Control\MessageBox\MessageBoxEx.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Modal\AddNumberWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Control\MessageBox\MessageBoxWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -104,6 +109,9 @@
   <ItemGroup>
     <Compile Include="Modal\AddNumberWindow.xaml.cs">
       <DependentUpon>AddNumberWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Control\MessageBox\MessageBoxWindow.xaml.cs">
+      <DependentUpon>MessageBoxWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modal\StringAddWindow.xaml.cs">
       <DependentUpon>StringAddWindow.xaml</DependentUpon>

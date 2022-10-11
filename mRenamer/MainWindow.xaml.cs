@@ -1,4 +1,5 @@
-﻿using mRenamer.Modal;
+﻿using mRenamer.Control.MessageBox;
+using mRenamer.Modal;
 using mRenamer.Model;
 using System;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ namespace mRenamer
             List<FileInfo> notExists = FileInfos.Where(f => !f.ExistsOriginFile()).ToList();
             if (notExists.Count > 0)
             {
-                MessageBox.Show("원본 파일에 누락이 있습니다.");
+                MessageBoxEx.Show(this, "원본 파일에 누락이 있습니다.");
                 return;
             }
 
@@ -84,7 +85,7 @@ namespace mRenamer
             List<string> duplicate = FileInfos.GroupBy(f => f.targetFileName).Where(g => g.Count() > 1).Select(x => x.Key).ToList();
             if (duplicate.Count > 0)
             {
-                MessageBox.Show("변경할 파일명 중 중복인 이름이 있습니다.");
+                MessageBoxEx.Show(this, "변경할 파일명 중 중복인 이름이 있습니다.");
                 return;
             }
 
@@ -98,7 +99,7 @@ namespace mRenamer
                 FileInfos.ToList().ForEach(f => f.ChangeTempFileName());
                 if (FileInfos.Where(f => f.status == StatusEnum.Error).Count() > 0)
                 {
-                    MessageBox.Show("실패하였습니다.");
+                    MessageBoxEx.Show(this, "실패하였습니다.");
                     return;
                 }
 
@@ -106,12 +107,13 @@ namespace mRenamer
                 FileInfos.ToList().ForEach(f => f.ChangeTargetFileName());
                 if (FileInfos.Where(f => f.status == StatusEnum.Error).Count() > 0)
                 {
-                    MessageBox.Show("실패하였습니다.");
+                    MessageBoxEx.Show(this, "실패하였습니다.");
                     return;
                 }
 
                 lv.Items.Refresh();
-                MessageBox.Show("완료");
+                MessageBoxEx.Show(this, "완료");
+
             }
             catch (Exception ex)
             {
