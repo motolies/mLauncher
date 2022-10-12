@@ -442,9 +442,9 @@ namespace mLauncher
         {
             hook.KeyPressed += new EventHandler<KeyPressedEventArgs>(Global_KeyPressed);
 
-            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.A);
-            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.Q);
-            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift, Form.Keys.R);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt, Form.Keys.A);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt, Form.Keys.Q);
+            hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt, Form.Keys.R);
 
             // volume
             hook.RegisterHotKey(mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt, Form.Keys.Right);
@@ -456,15 +456,15 @@ namespace mLauncher
         private void Global_KeyPressed(object sender, KeyPressedEventArgs e)
         {
             Console.WriteLine(e.Modifier.ToString() + " + " + e.Key.ToString());
-            if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.A)
+            if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt) && e.Key == Form.Keys.A)
             {
                 WindowShow();
             }
-            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.Q)
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt) && e.Key == Form.Keys.Q)
             {
                 StartSubProgram("mFileSearch.exe");
             }
-            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift) && e.Key == Form.Keys.R)
+            else if (e.Modifier == (mHK.Keyboad.ModifierKeys.Control | mHK.Keyboad.ModifierKeys.Shift | mHK.Keyboad.ModifierKeys.Alt) && e.Key == Form.Keys.R)
             {
                 StartSubProgram("mRenamer.exe");
             }
