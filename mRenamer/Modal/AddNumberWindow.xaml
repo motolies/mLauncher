@@ -14,8 +14,9 @@
     <Window.Resources>
         <bs:EnumDescriptionConverter x:Key="enumConverter" />
     </Window.Resources>
-    
-    <Grid Margin="10">
+
+    <Grid Margin="10"
+          FocusManager.FocusedElement="{Binding ElementName=length}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="1*" />
@@ -42,7 +43,7 @@
                  PreviewTextInput="NumberValidationTextBox"
                  Grid.Column="0"
                  Grid.Row="1"
-                 Text="{Binding Length}"
+                 Text="{Binding Length, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Center" />
         <TextBlock Grid.Column="1"
                    Grid.Row="1"
@@ -55,7 +56,7 @@
                  PreviewTextInput="NumberValidationTextBox"
                  Grid.Column="0"
                  Grid.Row="2"
-                 Text="{Binding Start}"
+                 Text="{Binding Start, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Center" />
 
         <TextBlock Grid.Column="1"
